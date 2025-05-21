@@ -24,7 +24,7 @@
 
 ---
 
-## 🧩 Wymagania projektu
+## 📋 Wymagania projektu
 Nie wszystkie są obowiązkowe, ale tym więcej tym lepsza ocena.
 ❌/🚧/✅
 
@@ -48,6 +48,8 @@ Nie wszystkie są obowiązkowe, ale tym więcej tym lepsza ocena.
 - ❌ Możliwość zarządzania urządzeniami
 - ❌ Czy rozwiązanie jest bezpieczne?
 - ❌ Zdalna konfiguracja urządzenia
+
+---
 
 
 
