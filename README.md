@@ -1,5 +1,11 @@
 # 📬 Smart moduł do skrzynki pocztowej
 
+## 📌 Business Context
+W dobie coraz bardziej powszechnej cyfryzacji oraz różnorodnych, wygodnych punktów odbioru paczek, coraz rzadziej zaglądamy do prywatnej skrzynki pocztowej. Tymczasem to właśnie tam najczęściej trafiają najistotniejsze i czasowo wrażliwe przesyłki – takie jak pisma z banku, mandaty czy ważne dokumenty.
+
+Aby rozwiązać ten problem, proponujemy Smart moduł do skrzynki pocztowej – proste urządzenie IoT w formie wkładki/płytki, które umożliwia zdalne monitorowanie zawartości skrzynki dzięki wbudowanej wadze. Gdy do skrzynki zostanie wrzucony list lub mała paczka, urządzenie automatycznie wykryje zmianę wagi i wyśle powiadomienie do użytkownika, informując go o dostawie.
+
+Projekt wpisuje się w rozwój rozwiązań Smart Home i Smart Living, oferując wygodę i bezpieczeństwo przy minimalnej ingerencji w istniejącą infrastrukturę. Urządzenie będzie łatwe do zamontowania i nie będzie wymagało modyfikacji skrzynki pocztowej ani specjalistycznej instalacji.
 
 ## 🧩 Wymagania biznesowe
 
