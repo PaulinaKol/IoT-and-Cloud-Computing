@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Moje urządzenia</title>
+</head>
+<body>
+    <h2>Twoje urządzenia</h2>
+    <ul>
+        {% for device in devices %}
+            <li>ID: {{ device.device_id }} | Kod: {{ device.security_code }} | Bateria: {{ device.battery_level }}% | Ostatnia paczka: {{ device.last_package_time }}</li>
+        {% empty %}
+            <li>Brak urządzeń.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_device' %}">Dodaj urządzenie</a>
+    <form method="post" action="{% url 'logout' %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit">Wyloguj się</button>
+</form>
+</body>
+</html>

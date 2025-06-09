@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dodaj urządzenie</title>
+</head>
+<body>
+    <h2>Dodaj urządzenie</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Dodaj</button>
+    </form>
+    <a href="{% url 'my_devices' %}">Powrót do listy urządzeń</a>
+</body>
+</html>
