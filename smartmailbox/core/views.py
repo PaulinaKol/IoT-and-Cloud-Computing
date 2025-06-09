@@ -31,3 +31,9 @@ def add_device(request):
     else:
         form = DeviceForm()
     return render(request, "add_device.html", {"form": form})
+
+def home_redirect(request):
+    if request.user.is_authenticated:
+        return redirect('my_devices')
+    else:
+        return redirect('login')
