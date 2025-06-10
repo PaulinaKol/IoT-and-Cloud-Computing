@@ -8,6 +8,7 @@ class Device(models.Model):
     security_code = models.CharField(max_length=20)
     battery_level = models.IntegerField(default=100)
     last_package_time = models.DateTimeField(null=True, blank=True)
+    name = models.CharField(max_length=100, default="Urządzenie")
 
     def __str__(self):
         return f"{self.device_id} (owner: {self.owner.username})"

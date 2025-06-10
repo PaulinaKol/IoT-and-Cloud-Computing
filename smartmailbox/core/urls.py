@@ -9,4 +9,6 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('my_devices/', views.my_devices, name='my_devices'),
     path('add_device/', views.add_device, name='add_device'),
+    path('delete_device/<str:device_id>/', views.delete_device, name='delete_device'),
+    path('rename_device/', views.rename_device, name='rename_device'),
 ]
