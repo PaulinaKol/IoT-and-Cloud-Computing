@@ -38,21 +38,21 @@ Nie wszystkie są obowiązkowe, ale tym więcej tym lepsza ocena.
 - ❌ C4 - Diagram Architektury - Poziom Kontekstu
 - ❌ C4 - Diagram Architektury - Poziom Kontenerów
 - ❌ Kalkulator kosztów Azure/AWS
-- ❌ Symulator Urządzenia IoT
+- 🚧 Symulator Urządzenia IoT
 - ❌ Serwis MQTT Broker
-- ❌ Baza Danych
-- ❌ REST API
+- 🚧 Baza Danych
+- 🚧 REST API
 - ❌ Instrukcje Deploy'owania
 - ❌ Instruckje Testowania
-- ❌ Czy wszystkie wymagania biznesowe zostały pokryte?
+- 🚧 Czy wszystkie wymagania biznesowe zostały pokryte?
 - ❌ Czy projekt działa?
 - ❌ "Infrastructure as Code"
 - ❌ Kolekcja Postman
-- ❌ Frontend
-- ❌ Własny system rejestracji
-- ❌ Możliwość zarządzania użytkownikami
-- ❌ Możliwość zarządzania urządzeniami
-- ❌ Czy rozwiązanie jest bezpieczne?
+- 🚧 Frontend
+- 🚧 Własny system rejestracji
+- 🚧 Możliwość zarządzania użytkownikami
+- 🚧 Możliwość zarządzania urządzeniami
+- 🚧 Czy rozwiązanie jest bezpieczne?
 - ❌ Zdalna konfiguracja urządzenia
 
 ---
