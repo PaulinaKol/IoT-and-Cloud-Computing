@@ -2,26 +2,9 @@
 <html>
 <head>
     {% load static %}
+    <link rel="stylesheet" href="{% static 'core_css/my_devices.css' %}">
+    <link rel="icon" href="{% static 'favicon.ico' %}">
     <title>Moje urządzenia</title>
-    <style>
-        /* Prosty styl modala */
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 10;
-            left: 0; top: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #fff;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
     <h2>Twoje urządzenia</h2>
@@ -30,7 +13,7 @@
             <li>
                 <b>{{ device.name }}</b> (ID: {{ device.device_id }}) | Kod: {{ device.security_code }} | Bateria: {{ device.battery_level }}% | Ostatnia paczka: {{ device.last_package_time }}
                 <button type="button" onclick="showRenameModal('{{ device.device_id }}', '{{ device.name }}')">Zmień nazwę</button>
-                <button type="button" onclick="showModal('{{ device.device_id }}')">Usuń</button>
+                <button type="button" onclick="showModal('{{ device.device_id }}', '{{ device.name }}')">Usuń</button>
                 <form id="delete-form-{{ device.device_id }}" method="post" action="{% url 'delete_device' device.device_id %}" style="display:none;">
                     {% csrf_token %}
                 </form>
@@ -45,7 +28,7 @@
         <button type="submit">Wyloguj się</button>
     </form>
 
-    <!-- MODAL usowania urzadzenia-->
+    <!-- MODAL usuwania urzadzenia-->
     <div id="myModal" class="modal">
         <div class="modal-content">
             <p id="modalMessage"></p>

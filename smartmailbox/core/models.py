@@ -13,4 +13,3 @@ class Device(models.Model):
     def __str__(self):
         return f"{self.device_id} (owner: {self.owner.username})"
 
-# Create your models here.

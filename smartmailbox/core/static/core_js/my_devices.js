@@ -1,16 +1,21 @@
 // Modal do usuwania urządzenia:
 let currentDeviceId = null;
+let currentDeviceName = null;
 
-function showModal(deviceId) {
+function showModal(deviceId, deviceName) {
     currentDeviceId = deviceId;
-    document.getElementById('modalMessage').innerText = `Czy napewno chcesz wyrejestrować urządzenie ${deviceId}?`;
+    currentDeviceName = deviceName;
+    document.getElementById('modalMessage').innerText =
+        `Czy napewno chcesz wyrejestrować urządzenie "${deviceName}" (ID: ${deviceId})?`;
     document.getElementById('myModal').style.display = "block";
 }
 
 function hideModal() {
     document.getElementById('myModal').style.display = "none";
     currentDeviceId = null;
+    currentDeviceName = null;
 }
+
 
 document.getElementById('confirmBtn').onclick = function() {
     if (currentDeviceId) {
