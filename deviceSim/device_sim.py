@@ -2,35 +2,155 @@ import paho.mqtt.client as mqtt
 import random
 import time
 from datetime import datetime
+import os
+import json
 
-BROKER = "test.mosquitto.org"  # Jeśli używasz brokera lokalnie. Zmień na adres brokera, jeśli korzystasz z innego.
+ASCII_ART = r"""
+                  _ _ _                     _            _          
+  _ __ ___   __ _(_) | |__   _____  __   __| | _____   _(_) ___ ___ 
+ | '_ ` _ \ / _` | | | '_ \ / _ \ \/ /  / _` |/ _ \ \ / / |/ __/ _ \
+ | | | | | | (_| | | | |_) | (_) >  <  | (_| |  __/\ V /| | (_|  __/
+ |_| |_| |_|\__,_|_|_|_.__/ \___/_/\_\  \__,_|\___| \_/ |_|\___\___|
+                                                                    
+"""
+
+BROKER = "test.mosquitto.org"  # Zmień, jeśli używasz innego brokera.
 PORT = 1883
 TOPIC = "mailbox/device_events"
 
-def main():
-    device_id = input("Podaj ID urządzenia: ")
-    security_code = input("Podaj kod bezpieczeństwa: ")
 
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def show_title(id_value=None, code_value=None, battery_value=None, weight_value=None):
+    clear_screen()
+    print(ASCII_ART)
+    print_status_bar(id_value, code_value, battery_value, weight_value)
+    print()
+
+def print_status_bar(id_value, code_value, battery_value, weight_value):
+    status = (
+        f"| ID: {id_value if id_value else '...'} "
+        f"| Kod Bezp: {code_value if code_value else '...'} "
+        f"| Stan Baterii: {battery_value if battery_value is not None else '...'} "
+        f"| Wykrywana waga: {weight_value if weight_value is not None else '...'} g |"
+    )
+    print(status)
+
+def change_battery_level(device_id, security_code, battery):
+    while True:
+        show_title(device_id, security_code, battery)
+        new_battery = input("Wprowadź nowy stan baterii (1-100): ")
+        try:
+            new_battery = int(new_battery)
+            if 1 <= new_battery <= 100:
+                return new_battery
+            else:
+                print("Stan baterii musi być liczbą od 1 do 100.")
+                time.sleep(1)
+        except ValueError:
+            print("Wprowadź poprawną liczbę.")
+            time.sleep(1)
+
+def change_detected_weight(device_id, security_code, battery, weight):
+    while True:
+        show_title(device_id, security_code, battery, weight)
+        new_weight = input("Wprowadź nową wykrywaną wagę (w gramach, >=0): ")
+        try:
+            new_weight = float(new_weight.replace(',', '.'))
+            if new_weight >= 0:
+                return new_weight
+            else:
+                print("Waga musi być nieujemna.")
+                time.sleep(1)
+        except ValueError:
+            print("Wprowadź poprawną liczbę.")
+            time.sleep(1)
+
+def get_device_info():
+    device_id = None
+    security_code = None
+    battery = None
+
+    # Wprowadzanie ID
+    show_title(device_id, security_code, battery)
+    device_id = input("Podaj ID urządzenia: ")
+
+    # Wprowadzanie kodu bezpieczeństwa
+    show_title(device_id, security_code, battery)
+    security_code = input("Podaj kod bezpieczeństwa urządzenia: ")
+
+    battery = change_battery_level(device_id, security_code, battery)
+
+    return device_id, security_code, battery
+
+def show_main_menu(device_id, security_code, battery, weight):
+    show_title(device_id, security_code, battery, weight)
+    print("Wprowadź numer opcji i naciśnij Enter:\n")
+    print("1. Symuluj wrzucenie paczki")
+    print("2. Symuluj wyciągnięcie paczki / paczek")
+    print("3. Zmień stan baterii")
+    print("4. Symuluj zaprzestanie sygnału heartbeat")
+    print("5. Zmień wykrywaną wagę")
+    print("0. Wyjdź z programu\n")
+
+def simulate_package_drop(client, device_id, security_code, battery, weight):
+    while True:
+        show_title(device_id, security_code, battery, weight)
+        weight_input = input("Podaj wagę wrzuconej przesyłki: ")
+        try:
+            added_weight = float(weight_input.replace(',', '.'))
+            if added_weight > 0:
+                break
+            else:
+                print("Waga musi być liczbą dodatnią.")
+                time.sleep(1)
+        except ValueError:
+            print("Wprowadź poprawną liczbę.")
+            time.sleep(1)
+    weight += added_weight
+    payload = {
+        "device_id": device_id,
+        "security_code": security_code,
+        "battery_level": battery,
+        "weight": weight,
+        "timestamp": datetime.now().isoformat()
+    }
+    client.publish(TOPIC, json.dumps(payload))
+    print(f"Wysłano powiadomienie: {payload}")
+    return weight
+
+def main():
+    device_id, security_code, battery = get_device_info()
+    weight = 0
     client = mqtt.Client()
     client.connect(BROKER, PORT, 60)
 
     while True:
-        input("Naciśnij Enter, aby zasymulować wrzucenie paczki...")
+        show_main_menu(device_id, security_code, battery, weight)
+        choice = input("Twój wybór: ")
+        if choice == "0":
+            print("Do zobaczenia!")
+            break
+        elif choice == "1":
+            weight = simulate_package_drop(client, device_id, security_code, battery, weight)
+        elif choice == "2":
+            show_title(device_id, security_code, battery, weight)
+            print("Symulacja wyciągnięcia paczki (do zaimplementowania)...")
+        elif choice == "3":
+            battery = change_battery_level(device_id, security_code, battery)
+        elif choice == "4":
+            show_title(device_id, security_code, battery, weight)
+            print("Symulacja zatrzymania sygnału heartbeat (do zaimplementowania)...")
+        elif choice == "5":
+            weight = change_detected_weight(device_id, security_code, battery, weight)
+        else:
+            show_title(device_id, security_code, battery, weight)
+            print("Niepoprawny wybór. Spróbuj ponownie.")
+        input("\nNaciśnij Enter, aby wrócić do menu...")
 
-        battery = random.randint(10, 100)
-        payload = {
-            "device_id": device_id,
-            "security_code": security_code,
-            "battery_level": battery,
-            "timestamp": datetime.now().isoformat()
-        }
 
-        # Wysyłka jako string – w realnym projekcie można użyć JSON
-        import json
-        client.publish(TOPIC, json.dumps(payload))
-        print(f"Wysłano powiadomienie: {payload}")
-
-        time.sleep(1)
 
 if __name__ == "__main__":
     main()
