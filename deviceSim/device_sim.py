@@ -1,7 +1,7 @@
 import paho.mqtt.client as mqtt
 import random
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 import os
 import json
 import threading
@@ -15,7 +15,7 @@ ASCII_ART = r"""
                                                                     
 """
 
-BROKER = "test.mosquitto.org"  # Zmień, jeśli używasz innego brokera.
+BROKER = "test.mosquitto.org"  # Tymczasowy broker testowy
 PORT = 1883
 TOPIC = "mailbox/device_events"
 
@@ -28,11 +28,11 @@ def heartbeat_loop(client, device_id_ref, security_code_ref, battery_ref, weight
                 "battery_level": battery_ref["value"],
                 "weight": weight_ref["value"],
                 "msg_type": "HEARTBEAT",
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
             client.publish(TOPIC, json.dumps(payload))
-            # print("Wysłano heartbeat.")   # opcjonalnie, nie spamuje terminala
-        for _ in range(10):  # 10 x 1 sekunda (razem 10 sek), żeby móc przerwać szybko pętlę przy wychodzeniu
+            #print("Wysłano heartbeat...") #FOR DEBUG
+        for _ in range(10):  # 10 x 1 sekunda, żeby móc przerwać szybko pętlę przy wychodzeniu
             if not running_flag["run"]:
                 break
             time.sleep(1)
@@ -134,7 +134,7 @@ def simulate_package_drop(client, device_id, security_code, battery, weight):
         "security_code": security_code,
         "battery_level": battery,
         "weight": weight,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
     client.publish(TOPIC, json.dumps(payload))
     print(f"Wysłano powiadomienie: {payload}")
@@ -170,7 +170,7 @@ def simulate_package_removal(client, device_id, security_code, battery, weight):
         "security_code": security_code,
         "battery_level": battery,
         "weight": weight,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
     client.publish(TOPIC, json.dumps(payload))
     print(f"Wysłano powiadomienie: {payload}")
