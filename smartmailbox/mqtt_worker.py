@@ -26,18 +26,34 @@ def on_message(client, userdata, msg):
         security_code = data.get('security_code')
         battery_level = data.get('battery_level')
         timestamp = data.get('timestamp')
+        weight = data.get('weight', None)
+        msg_type = data.get('msg_type', None)
 
         # Znajdź urządzenie po device_id i security_code
         device = Device.objects.filter(device_id=device_id, security_code=security_code).first()
         if device:
-            device.battery_level = battery_level
-            device.last_package_time = timestamp
+            # Aktualizuj stan baterii zawsze
+            if battery_level is not None:
+                device.battery_level = battery_level
+
+            # Reaguj na typ wiadomości
+            if msg_type == "MAIL_IN":
+                device.last_package_time = timestamp
+                # Możesz dodać logikę, np. logować wagę albo dodać pole w modelu
+            elif msg_type == "MAIL_OUT":
+                device.last_package_time = timestamp
+            elif msg_type == "HEARTBEAT":
+                # Możesz np. logować aktywność, nie aktualizować czasu ostatniej paczki
+                print(f"[HEARTBEAT] Urządzenie {device_id}: sygnał heartbeat, waga: {weight}g.")
+            else:
+                print(f"[INNY_TYP] msg_type={msg_type}, dane={data}")
+
             device.save()
-            print(f"Zaktualizowano urządzenie {device_id}")
         else:
             print("Nie znaleziono urządzenia lub kod nieprawidłowy.")
     except Exception as e:
         print(f"Błąd przy przetwarzaniu wiadomości: {e}")
+
 
 def main():
     client = mqtt.Client()
