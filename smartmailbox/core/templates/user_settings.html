@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'core_css/my_devices.css' %}">
+    <link rel="stylesheet" href="{% static 'core_css/user_settings.css' %}">
+    <title>Ustawienia użytkownika</title>
+</head>
+<body>
+    <h2>Ustawienia użytkownika</h2>
+    <div class="settings-section" id="email-notifications">
+        <h3>Powiadomienia Email</h3>
+        <label class="settings-option">
+            <input type="checkbox" id="notify_in" checked>
+            Wykrycie wrzucenia przesyłki
+        </label>
+        <label class="settings-option">
+            <input type="checkbox" id="notify_out">
+            Wykrycie wyciągnięcia przesyłki
+        </label>
+        <label class="settings-option">
+            <input type="checkbox" id="notify_low_battery" checked>
+            Informacja o niskim poziomie baterii urządzenia
+        </label>
+        <label class="settings-option">
+            <input type="checkbox" id="notify_lost_connection">
+            Utrata połączenia z urządzeniem
+        </label>
+        <button id="save-email-notifications">Zapisz powiadomienia</button>
+        <div id="email-notification-message" style="color:green; display:none;">Zapisano!</div>
+    </div>
+
+    <div class="settings-section" id="account">
+        <h3>Konto</h3>
+        <button id="change-password-btn">Zmień hasło</button>
+        <button id="change-email-btn">Zmień adres email</button>
+        <button id="delete-account-btn" style="color: red;">Usuń konto</button>
+    </div>
+
+    <a href="{% url 'my_devices' %}">← Powrót do urządzeń</a>
+
+     <script src="{% static 'core_js/user_settings.js' %}"></script>
+</body>
+</html>

@@ -28,3 +28,13 @@ class DeviceNotification(models.Model):
 
     def __str__(self):
         return f"[{self.created_at}] {self.device.name}: {self.msg_type} ({self.weight_diff()} g)"
+
+class UserNotificationSettings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    notify_mail_in = models.BooleanField(default=True)
+    notify_mail_out = models.BooleanField(default=False)
+    notify_low_battery = models.BooleanField(default=True)
+    notify_lost_connection = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Powiadomienia {self.user.username}"

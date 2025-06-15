@@ -14,4 +14,7 @@ urlpatterns = [
     path('delete_notifications/', views.delete_notifications, name='delete_notifications'),
     path('notifications_table/', views.notifications_table, name='notifications_table'),
     path('devices_list/', views.devices_list, name='devices_list'),
+    path('user_settings/', views.user_settings, name='user_settings'),
+    path('ajax_get_user_notification_settings/', views.ajax_get_user_notification_settings, name='ajax_get_user_notification_settings'),
+    path('ajax_set_user_notification_settings/', views.ajax_set_user_notification_settings, name='ajax_set_user_notification_settings'),
 ]

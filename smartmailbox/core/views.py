@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
 from .forms import DeviceForm
-from .models import Device, DeviceNotification
+from .models import Device, DeviceNotification, UserNotificationSettings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
@@ -123,3 +123,30 @@ def delete_notifications(request):
     if ids:
         DeviceNotification.objects.filter(id__in=ids, device__owner=request.user).delete()
     return redirect('my_devices')
+
+@login_required
+def user_settings(request):
+    # Na razie tylko placeholdery, później będą tu ustawienia pobierane z bazy
+    return render(request, "user_settings.html")
+
+@login_required
+@require_GET
+def ajax_get_user_notification_settings(request):
+    settings, _ = UserNotificationSettings.objects.get_or_create(user=request.user)
+    return JsonResponse({
+        'notify_mail_in': settings.notify_mail_in,
+        'notify_mail_out': settings.notify_mail_out,
+        'notify_low_battery': settings.notify_low_battery,
+        'notify_lost_connection': settings.notify_lost_connection,
+    })
+
+@login_required
+@require_POST
+def ajax_set_user_notification_settings(request):
+    settings, _ = UserNotificationSettings.objects.get_or_create(user=request.user)
+    settings.notify_mail_in = request.POST.get('notify_mail_in') == 'true'
+    settings.notify_mail_out = request.POST.get('notify_mail_out') == 'true'
+    settings.notify_low_battery = request.POST.get('notify_low_battery') == 'true'
+    settings.notify_lost_connection = request.POST.get('notify_lost_connection') == 'true'
+    settings.save()
+    return JsonResponse({'success': True})
