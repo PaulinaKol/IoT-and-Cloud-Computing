@@ -7,11 +7,18 @@
     <title>Moje urządzenia</title>
 </head>
 <body>
+    <!-- Przycisk Wyloguj się w prawym górnym rogu -->
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="logout-top-right">Wyloguj się</button>
+    </form>
+
     <h2>Twoje urządzenia</h2>
+
     <ul>
     {% for device in devices %}
         <li>
-            <b>{{ device.name }}</b><br>
+            <span class="device-name">{{ device.name }}</span><br>
             <span>Aktualna wykrywana waga:</span> <b>{{ device.detected_weight }} g</b><br>
             <span>Stan baterii:</span> <b>{{ device.battery_level }}%</b><br>
             <span>Status:</span>
@@ -28,14 +35,14 @@
         <li>Brak urządzeń.</li>
     {% endfor %}
     </ul>
-</ul>
-    <a href="{% url 'add_device' %}">Dodaj urządzenie</a>
-    <form method="post" action="{% url 'logout' %}" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit">Wyloguj się</button>
-    </form>
 
-    <!-- MODAL usuwania urzadzenia-->
+    <div class="action-buttons">
+        <div class="action-button add">
+            <a href="{% url 'add_device' %}">Dodaj urządzenie</a>
+        </div>
+    </div>
+
+    <!-- MODAL usuwania urządzenia -->
     <div id="myModal" class="modal">
         <div class="modal-content">
             <p id="modalMessage"></p>
@@ -44,8 +51,7 @@
         </div>
     </div>
 
-
-    <!-- MODAL zmiany nazwy urządzenia-->
+    <!-- MODAL zmiany nazwy urządzenia -->
     <div id="renameModal" class="modal">
         <div class="modal-content">
             <p id="renameModalMessage"></p>
@@ -54,14 +60,13 @@
             <button onclick="hideRenameModal()">Anuluj</button>
         </div>
     </div>
+
     <form id="renameForm" method="post" action="{% url 'rename_device' %}" style="display:none;">
         {% csrf_token %}
         <input type="hidden" name="device_id" id="renameDeviceId">
         <input type="hidden" name="new_name" id="renameDeviceNewName">
     </form>
 
-<script src="{% static 'core_js/my_devices.js' %}"></script>
-
+    <script src="{% static 'core_js/my_devices.js' %}"></script>
 </body>
 </html>
- 
