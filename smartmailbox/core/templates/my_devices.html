@@ -43,11 +43,6 @@
             <button onclick="hideRenameModal()">Anuluj</button>
         </div>
     </div>
-    <form id="renameForm" method="post" action="{% url 'rename_device' %}" style="display:none;">
-        {% csrf_token %}
-        <input type="hidden" name="device_id" id="renameDeviceId">
-        <input type="hidden" name="new_name" id="renameDeviceNewName">
-    </form>
 
     <script src="{% static 'core_js/my_devices.js' %}"></script>
 

@@ -23,45 +23,7 @@ from django.utils import timezone
 
 @login_required
 def my_devices(request):
-    devices = Device.objects.filter(owner=request.user)
-    now = timezone.now()
-    device_list = []
-
-    for device in devices:
-        if device.last_heartbeat_time:
-            delta = (now - device.last_heartbeat_time).total_seconds()
-            if delta <= 15:
-                if device.battery_level > 25:
-                    status = "Dostępne"
-                    status_class = "status-available"
-                else:
-                    status = "Niski Poziom Baterii"
-                    status_class = "status-low-battery"
-            else:
-                status = "Niedostępne"
-                status_class = "status-unavailable"
-        else:
-            status = "Niedostępne"
-            status_class = "status-unavailable"
-
-        device_list.append({
-            'name': device.name,
-            'device_id': device.device_id,
-            'security_code': device.security_code,
-            'battery_level': device.battery_level,
-            'detected_weight': device.detected_weight,
-            'status': status,
-            'status_class': status_class,
-        })
-
-    notifications = DeviceNotification.objects.filter(
-        device__owner=request.user
-    ).order_by('-created_at')
-
-    return render(request, "my_devices.html", {
-        "devices": device_list,
-        "notifications": notifications,
-    })
+    return render(request, "my_devices.html")
 
 @login_required
 def devices_list(request):
@@ -91,7 +53,8 @@ def devices_list(request):
             'device_id': device.device_id,
             'security_code': device.security_code,
             'battery_level': device.battery_level,
-            'detected_weight': device.detected_weight,
+            'display_battery': '--%' if status == "Niedostępne" else f"{device.battery_level}%",
+            'detected_weight': '---' if status == "Niedostępne" else f"{device.detected_weight}%",
             'status': status,
             'status_class': status_class,
         })
@@ -106,12 +69,14 @@ def home_redirect(request):
         return redirect('login')
     
 @login_required
-def delete_device(request, device_id):
-    device = get_object_or_404(Device, device_id=device_id, owner=request.user)
-    if request.method == "POST":
+@require_POST
+def ajax_delete_device(request):
+    device_id = request.POST.get('device_id')
+    device = Device.objects.filter(device_id=device_id, owner=request.user).first()
+    if device:
         device.delete()
-        return redirect('my_devices')
-    return render(request, "delete_device_confirm.html", {"device": device})
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Urządzenie nie istnieje'}, status=400)
 
 @login_required
 def add_device(request):
@@ -131,17 +96,17 @@ def add_device(request):
 
 from django.views.decorators.csrf import csrf_exempt  # lub użyj csrf_token w formularzu JS
 
-
 @login_required
-def rename_device(request):
-    if request.method == "POST":
-        device_id = request.POST.get('device_id')
-        new_name = request.POST.get('new_name')
-        device = Device.objects.filter(device_id=device_id, owner=request.user).first()
-        if device and new_name:
-            device.name = new_name
-            device.save()
-    return redirect('my_devices')
+@require_POST
+def ajax_rename_device(request):
+    device_id = request.POST.get('device_id')
+    new_name = request.POST.get('new_name')
+    device = Device.objects.filter(device_id=device_id, owner=request.user).first()
+    if device and new_name:
+        device.name = new_name
+        device.save()
+        return JsonResponse({'success': True, 'new_name': new_name})
+    return JsonResponse({'success': False, 'error': 'Nieprawidłowe dane'}, status=400)
 
 @login_required
 def notifications_table(request):

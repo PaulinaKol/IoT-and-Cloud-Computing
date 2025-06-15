@@ -16,10 +16,37 @@ function hideModal() {
     currentDeviceName = null;
 }
 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Czy to ten cookie?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 document.getElementById('confirmBtn').onclick = function() {
     if (currentDeviceId) {
-        document.getElementById(`delete-form-${currentDeviceId}`).submit();
+        const form = document.getElementById(`delete-form-${currentDeviceId}`);
+        // Dodaj token csrf jako input hidden, jeśli nie istnieje
+        if (!form.querySelector('input[name="csrfmiddlewaretoken"]')) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'csrfmiddlewaretoken';
+            input.value = getCookie('csrftoken');
+            form.appendChild(input);
+        } else {
+            // Zaktualizuj wartość tokena jeśli istnieje (ważne przy odświeżeniu)
+            form.querySelector('input[name="csrfmiddlewaretoken"]').value = getCookie('csrftoken');
+        }
+        form.submit();
     }
     hideModal();
 }
@@ -36,20 +63,59 @@ function showRenameModal(deviceId, currentName) {
     document.getElementById('renameModal').style.display = "block";
 }
 
+document.getElementById('renameConfirmBtn').onclick = function () {
+    if (renameCurrentDeviceId) {
+        const newName = document.getElementById('newDeviceName').value.trim();
+        fetch('/ajax_rename_device/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: 'device_id=' + encodeURIComponent(renameCurrentDeviceId) +
+                  '&new_name=' + encodeURIComponent(newName)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                reloadDevicesList(); // Odśwież listę urządzeń AJAX-em
+            } else {
+                alert('Nie udało się zmienić nazwy: ' + (data.error || 'nieznany błąd'));
+            }
+        })
+        .catch(() => alert('Błąd połączenia z serwerem.'));
+    }
+    hideRenameModal();
+}
+
 function hideRenameModal() {
     document.getElementById('renameModal').style.display = "none";
     renameCurrentDeviceId = null;
 }
 
-document.getElementById('renameConfirmBtn').onclick = function () {
-    if (renameCurrentDeviceId) {
-        document.getElementById('renameDeviceId').value = renameCurrentDeviceId;
-        document.getElementById('renameDeviceNewName').value =
-            document.getElementById('newDeviceName').value.trim();
-        document.getElementById('renameForm').submit();
+document.getElementById('confirmBtn').onclick = function() {
+    if (currentDeviceId) {
+        fetch('/ajax_delete_device/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: 'device_id=' + encodeURIComponent(currentDeviceId)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                reloadDevicesList();
+            } else {
+                alert('Nie udało się usunąć urządzenia: ' + (data.error || 'nieznany błąd'));
+            }
+        })
+        .catch(() => alert('Błąd połączenia z serwerem.'));
     }
-    hideRenameModal();
+    hideModal();
 }
+
 
 
 // Zamykanie modali po kliknięciu w tło:
@@ -68,6 +134,8 @@ window.onclick = function(event) {
 
 // Zaznacz/odznacz wszystkie powiadomienia w tabeli powiadomień
 document.addEventListener("DOMContentLoaded", function() {
+    reloadDevicesList();
+    reloadNotificationsTable();
     const selectAll = document.getElementById('select-all');
     if (selectAll) {
         selectAll.addEventListener('change', function() {

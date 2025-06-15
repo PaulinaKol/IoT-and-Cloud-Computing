@@ -3,16 +3,13 @@
     <li>
         <b>{{ device.name }}</b><br>
         <span>Aktualna wykrywana waga:</span> <b>{{ device.detected_weight }} g</b><br>
-        <span>Stan baterii:</span> <b>{{ device.battery_level }}%</b><br>
+        <span>Stan baterii:</span> <b>{{ device.display_battery }}</b><br>
         <span>Status:</span>
         <span class="{{ device.status_class }}"><b>{{ device.status }}</b></span><br>
         <span>ID:</span> <b>{{ device.device_id }}</b><br>
         <span>Kod bezp.:</span> <b>{{ device.security_code }}</b><br>
         <button type="button" onclick="showRenameModal('{{ device.device_id }}', '{{ device.name }}')">Zmień nazwę</button>
-        <button type="button" onclick="showModal('{{ device.device_id }}', '{{ device.name }}')">Usuń</button>
-        <form id="delete-form-{{ device.device_id }}" method="post" action="{% url 'delete_device' device.device_id %}" style="display:none;">
-            {% csrf_token %}
-        </form>
+        <button type="button" class="delete-device-btn" data-device-id="{{ device.device_id }}" onclick="showModal('{{ device.device_id }}', '{{ device.name }}')">Usuń</button>
     </li>
 {% empty %}
     <li>Brak urządzeń.</li>
