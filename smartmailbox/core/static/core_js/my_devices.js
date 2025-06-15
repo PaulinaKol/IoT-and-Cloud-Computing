@@ -76,3 +76,35 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
+function reloadNotificationsTable() {
+    fetch('/notifications_table/')
+        .then(response => response.json())
+        .then(data => {
+            const table = document.getElementById('notifications-table');
+            if (table) {
+                table.innerHTML = data.html;
+            }
+            // Ponownie podpinamy event zaznaczania wszystkich po podmianie DOM
+            const selectAll = document.getElementById('select-all');
+            if (selectAll) {
+                selectAll.addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('input[name="notification_ids"]');
+                    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                });
+            }
+        });
+}
+setInterval(reloadNotificationsTable, 10000); // Odświeżaj co 10 sekund:
+
+function reloadDevicesList() {
+    fetch('/devices_list/')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('devices-list');
+            if (container) {
+                container.innerHTML = data.html;
+            }
+        });
+}
+setInterval(reloadDevicesList, 10000); // Odświeżaj co 10 sekund:

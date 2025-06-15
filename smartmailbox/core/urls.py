@@ -12,4 +12,6 @@ urlpatterns = [
     path('delete_device/<str:device_id>/', views.delete_device, name='delete_device'),
     path('rename_device/', views.rename_device, name='rename_device'),
     path('delete_notifications/', views.delete_notifications, name='delete_notifications'),
+    path('notifications_table/', views.notifications_table, name='notifications_table'),
+    path('devices_list/', views.devices_list, name='devices_list'),
 ]

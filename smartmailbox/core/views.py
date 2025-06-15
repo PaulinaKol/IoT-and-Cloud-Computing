@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 
 def register(request):
     if request.method == "POST":
@@ -61,19 +63,41 @@ def my_devices(request):
         "notifications": notifications,
     })
 
-
 @login_required
-def add_device(request):
-    if request.method == "POST":
-        form = DeviceForm(request.POST)
-        if form.is_valid():
-            device = form.save(commit=False)
-            device.owner = request.user
-            device.save()
-            return redirect('my_devices')
-    else:
-        form = DeviceForm()
-    return render(request, "add_device.html", {"form": form})
+def devices_list(request):
+    devices = Device.objects.filter(owner=request.user)
+    now = timezone.now()
+    device_list = []
+
+    for device in devices:
+        if device.last_heartbeat_time:
+            delta = (now - device.last_heartbeat_time).total_seconds()
+            if delta <= 15:
+                if device.battery_level > 25:
+                    status = "Dostępne"
+                    status_class = "status-available"
+                else:
+                    status = "Niski Poziom Baterii"
+                    status_class = "status-low-battery"
+            else:
+                status = "Niedostępne"
+                status_class = "status-unavailable"
+        else:
+            status = "Niedostępne"
+            status_class = "status-unavailable"
+
+        device_list.append({
+            'name': device.name,
+            'device_id': device.device_id,
+            'security_code': device.security_code,
+            'battery_level': device.battery_level,
+            'detected_weight': device.detected_weight,
+            'status': status,
+            'status_class': status_class,
+        })
+
+    html = render_to_string('devices_list.html', {'devices': device_list})
+    return JsonResponse({'html': html})
 
 def home_redirect(request):
     if request.user.is_authenticated:
@@ -118,6 +142,14 @@ def rename_device(request):
             device.name = new_name
             device.save()
     return redirect('my_devices')
+
+@login_required
+def notifications_table(request):
+    notifications = DeviceNotification.objects.filter(
+        device__owner=request.user
+    ).order_by('-created_at')
+    html = render_to_string('notifications_table.html', {'notifications': notifications})
+    return JsonResponse({'html': html})
 
 @login_required
 @require_POST
