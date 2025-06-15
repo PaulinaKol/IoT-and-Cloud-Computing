@@ -2,9 +2,9 @@ import os
 import django
 import json
 import paho.mqtt.client as mqtt
-from datetime import datetime
+from django.utils.dateparse import parse_datetime
+from django.utils.timezone import make_aware, is_naive
 
-# Ustawienie Django settings (upewnij się, że ścieżka jest poprawna!)
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'smartmailbox.settings')
 django.setup()
 
@@ -29,22 +29,25 @@ def on_message(client, userdata, msg):
         weight = data.get('weight', None)
         msg_type = data.get('msg_type', None)
 
-        # Znajdź urządzenie po device_id i security_code
         device = Device.objects.filter(device_id=device_id, security_code=security_code).first()
         if device:
-            # Aktualizuj stan baterii zawsze
             if battery_level is not None:
                 device.battery_level = battery_level
+            if weight is not None:
+                device.detected_weight = weight
 
-            # Reaguj na typ wiadomości
-            if msg_type == "MAIL_IN":
-                device.last_package_time = timestamp
-                # Możesz dodać logikę, np. logować wagę albo dodać pole w modelu
-            elif msg_type == "MAIL_OUT":
-                device.last_package_time = timestamp
-            elif msg_type == "HEARTBEAT":
-                # Możesz np. logować aktywność, nie aktualizować czasu ostatniej paczki
+            dt = parse_datetime(timestamp)
+            if dt and is_naive(dt):
+                from django.utils import timezone
+                dt = make_aware(dt, timezone.get_current_timezone())
+
+            if msg_type == "HEARTBEAT":
+                device.last_heartbeat_time = dt
                 print(f"[HEARTBEAT] Urządzenie {device_id}: sygnał heartbeat, waga: {weight}g.")
+            elif msg_type == "MAIL_IN":
+                print(f"[MAIL_IN] Urządzenie {device_id}: wrzucono paczkę o wadze {weight}g.")
+            elif msg_type == "MAIL_OUT":
+                print(f"[MAIL_OUT] Urządzenie {device_id}: wyciągnięto paczkę/paczki, aktualna wykrywana waga: {weight}g.")
             else:
                 print(f"[INNY_TYP] msg_type={msg_type}, dane={data}")
 

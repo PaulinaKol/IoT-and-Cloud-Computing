@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('device_id', 'name', 'owner', 'battery_level', 'last_package_time')
+    list_display = ('device_id', 'name', 'owner', 'battery_level', 'last_heartbeat_time')
     list_filter = ('owner', 'battery_level')
     search_fields = ('device_id', 'name', 'owner__username')
     actions = ['reset_battery', 'set_name_to_default']

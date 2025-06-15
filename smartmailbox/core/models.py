@@ -6,8 +6,9 @@ class Device(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     device_id = models.CharField(max_length=50, unique=True)
     security_code = models.CharField(max_length=20)
-    battery_level = models.IntegerField(default=100)
-    last_package_time = models.DateTimeField(null=True, blank=True)
+    battery_level = models.IntegerField(default=0)
+    detected_weight = models.FloatField(default=0)
+    last_heartbeat_time = models.DateTimeField(null=True, blank=True)
     name = models.CharField(max_length=100, default="Urządzenie")
 
     def __str__(self):

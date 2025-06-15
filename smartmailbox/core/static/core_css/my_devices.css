@@ -14,3 +14,16 @@
     width: 300px;
     text-align: center;
 }
+
+.status-available {
+    color: green;
+    font-weight: bold;
+}
+.status-low-battery {
+    color: goldenrod;
+    font-weight: bold;
+}
+.status-unavailable {
+    color: red;
+    font-weight: bold;
+}

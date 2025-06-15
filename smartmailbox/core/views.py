@@ -4,6 +4,7 @@ from .forms import DeviceForm
 from .models import Device
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 def register(request):
     if request.method == "POST":
@@ -15,10 +16,43 @@ def register(request):
         form = RegisterForm()
     return render(request, "register.html", {"form": form})
 
+from django.utils import timezone
+
 @login_required
 def my_devices(request):
     devices = Device.objects.filter(owner=request.user)
-    return render(request, "my_devices.html", {"devices": devices})
+    now = timezone.now()
+    device_list = []
+
+    for device in devices:
+        if device.last_heartbeat_time:
+            delta = (now - device.last_heartbeat_time).total_seconds()
+            if delta <= 15:
+                if device.battery_level > 25:
+                    status = "Dostępne"
+                    status_class = "status-available"
+                else:
+                    status = "Niski Poziom Baterii"
+                    status_class = "status-low-battery"
+            else:
+                status = "Niedostępne"
+                status_class = "status-unavailable"
+        else:
+            status = "Niedostępne"
+            status_class = "status-unavailable"
+
+        device_list.append({
+            'name': device.name,
+            'device_id': device.device_id,
+            'security_code': device.security_code,
+            'battery_level': device.battery_level,
+            'detected_weight': device.detected_weight,
+            'status': status,
+            'status_class': status_class,
+        })
+
+    return render(request, "my_devices.html", {"devices": device_list})
+
 
 @login_required
 def add_device(request):

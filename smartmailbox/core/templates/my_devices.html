@@ -9,19 +9,26 @@
 <body>
     <h2>Twoje urządzenia</h2>
     <ul>
-        {% for device in devices %}
-            <li>
-                <b>{{ device.name }}</b> (ID: {{ device.device_id }}) | Kod: {{ device.security_code }} | Bateria: {{ device.battery_level }}% | Ostatnia paczka: {{ device.last_package_time }}
-                <button type="button" onclick="showRenameModal('{{ device.device_id }}', '{{ device.name }}')">Zmień nazwę</button>
-                <button type="button" onclick="showModal('{{ device.device_id }}', '{{ device.name }}')">Usuń</button>
-                <form id="delete-form-{{ device.device_id }}" method="post" action="{% url 'delete_device' device.device_id %}" style="display:none;">
-                    {% csrf_token %}
-                </form>
-            </li>
-        {% empty %}
-            <li>Brak urządzeń.</li>
-        {% endfor %}
+    {% for device in devices %}
+        <li>
+            <b>{{ device.name }}</b><br>
+            <span>Aktualna wykrywana waga:</span> <b>{{ device.detected_weight }} g</b><br>
+            <span>Stan baterii:</span> <b>{{ device.battery_level }}%</b><br>
+            <span>Status:</span>
+            <span class="{{ device.status_class }}"><b>{{ device.status }}</b></span><br>
+            <span>ID:</span> <b>{{ device.device_id }}</b><br>
+            <span>Kod bezp.:</span> <b>{{ device.security_code }}</b><br>
+            <button type="button" onclick="showRenameModal('{{ device.device_id }}', '{{ device.name }}')">Zmień nazwę</button>
+            <button type="button" onclick="showModal('{{ device.device_id }}', '{{ device.name }}')">Usuń</button>
+            <form id="delete-form-{{ device.device_id }}" method="post" action="{% url 'delete_device' device.device_id %}" style="display:none;">
+                {% csrf_token %}
+            </form>
+        </li>
+    {% empty %}
+        <li>Brak urządzeń.</li>
+    {% endfor %}
     </ul>
+</ul>
     <a href="{% url 'add_device' %}">Dodaj urządzenie</a>
     <form method="post" action="{% url 'logout' %}" style="display:inline;">
         {% csrf_token %}
@@ -38,7 +45,7 @@
     </div>
 
 
-    <!-- MODAL zmiany nazwy -->
+    <!-- MODAL zmiany nazwy urządzenia-->
     <div id="renameModal" class="modal">
         <div class="modal-content">
             <p id="renameModalMessage"></p>

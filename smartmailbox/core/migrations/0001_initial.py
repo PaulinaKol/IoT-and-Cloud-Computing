@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('device_id', models.CharField(max_length=50, unique=True)),
                 ('security_code', models.CharField(max_length=20)),
                 ('battery_level', models.IntegerField(default=100)),
-                ('last_package_time', models.DateTimeField(blank=True, null=True)),
+                ('last_heartbeat_time', models.DateTimeField(blank=True, null=True)),
                 ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
