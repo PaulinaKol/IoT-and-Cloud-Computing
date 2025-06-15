@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
 from .forms import DeviceForm
-from .models import Device
+from .models import Device, DeviceNotification
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -51,7 +51,14 @@ def my_devices(request):
             'status_class': status_class,
         })
 
-    return render(request, "my_devices.html", {"devices": device_list})
+    notifications = DeviceNotification.objects.filter(
+        device__owner=request.user
+    ).order_by('-created_at')
+
+    return render(request, "my_devices.html", {
+        "devices": device_list,
+        "notifications": notifications,
+    })
 
 
 @login_required

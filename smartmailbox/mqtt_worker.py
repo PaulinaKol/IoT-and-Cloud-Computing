@@ -5,10 +5,11 @@ import paho.mqtt.client as mqtt
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import make_aware, is_naive
 
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'smartmailbox.settings')
 django.setup()
 
-from core.models import Device
+from core.models import Device, DeviceNotification
 
 BROKER = "test.mosquitto.org"
 PORT = 1883
@@ -33,6 +34,8 @@ def on_message(client, userdata, msg):
         if device:
             if battery_level is not None:
                 device.battery_level = battery_level
+
+            previous_weight = getattr(device, 'detected_weight', 0) or 0
             if weight is not None:
                 device.detected_weight = weight
 
@@ -44,10 +47,13 @@ def on_message(client, userdata, msg):
             if msg_type == "HEARTBEAT":
                 device.last_heartbeat_time = dt
                 print(f"[HEARTBEAT] Urządzenie {device_id}: sygnał heartbeat, waga: {weight}g.")
-            elif msg_type == "MAIL_IN":
-                print(f"[MAIL_IN] Urządzenie {device_id}: wrzucono paczkę o wadze {weight}g.")
-            elif msg_type == "MAIL_OUT":
-                print(f"[MAIL_OUT] Urządzenie {device_id}: wyciągnięto paczkę/paczki, aktualna wykrywana waga: {weight}g.")
+            elif msg_type in ["MAIL_IN", "MAIL_OUT"]:
+                DeviceNotification.objects.create(
+                    device=device,
+                    msg_type=msg_type,
+                    previous_weight=previous_weight,
+                    current_weight=weight if weight is not None else previous_weight
+                )
             else:
                 print(f"[INNY_TYP] msg_type={msg_type}, dane={data}")
 

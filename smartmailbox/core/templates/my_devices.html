@@ -35,6 +35,46 @@
         <button type="submit">Wyloguj się</button>
     </form>
 
+    <h3>Ostatnie powiadomienia ze wszystkich urządzeń</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Czas</th>
+                <th>Nazwa urządzenia</th>
+                <th>Typ zdarzenia</th>
+                <th>Zmiana wagi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for notification in notifications %}
+            <tr>
+                <td>{{ notification.created_at|date:"Y-m-d H:i:s" }}</td>
+                <td>{{ notification.device.name }}</td>
+                <td>
+                    {% if notification.msg_type == "MAIL_IN" %}
+                        Wrzucenie przesyłki
+                    {% elif notification.msg_type == "MAIL_OUT" %}
+                        Wyciągnięcie przesyłki
+                    {% else %}
+                        {{ notification.msg_type }}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ notification.previous_weight }}g → {{ notification.current_weight }}g
+                    ({% if notification.weight_difference > 0 %}
+                        +{{ notification.weight_difference }}g
+                    {% else %}
+                        {{ notification.weight_difference }}g
+                    {% endif %}
+                    )
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">Brak powiadomień.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
     <!-- MODAL usuwania urzadzenia-->
     <div id="myModal" class="modal">
         <div class="modal-content">

@@ -14,3 +14,17 @@ class Device(models.Model):
     def __str__(self):
         return f"{self.device_id} (owner: {self.owner.username})"
 
+class DeviceNotification(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    msg_type = models.CharField(max_length=20)  # 'MAIL_IN' lub 'MAIL_OUT'
+    previous_weight = models.FloatField()
+    current_weight = models.FloatField()
+
+    @property
+    def weight_difference(self):
+        # Wynik zaokrąglony do dwóch miejsc po przecinku
+        return round(self.current_weight - self.previous_weight, 2)
+
+    def __str__(self):
+        return f"[{self.created_at}] {self.device.name}: {self.msg_type} ({self.weight_diff()} g)"
