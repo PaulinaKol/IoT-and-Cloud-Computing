@@ -11,4 +11,5 @@ urlpatterns = [
     path('add_device/', views.add_device, name='add_device'),
     path('delete_device/<str:device_id>/', views.delete_device, name='delete_device'),
     path('rename_device/', views.rename_device, name='rename_device'),
+    path('delete_notifications/', views.delete_notifications, name='delete_notifications'),
 ]

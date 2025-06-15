@@ -5,6 +5,7 @@ from .models import Device, DeviceNotification
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 def register(request):
     if request.method == "POST":
@@ -116,4 +117,12 @@ def rename_device(request):
         if device and new_name:
             device.name = new_name
             device.save()
+    return redirect('my_devices')
+
+@login_required
+@require_POST
+def delete_notifications(request):
+    ids = request.POST.getlist('notification_ids')
+    if ids:
+        DeviceNotification.objects.filter(id__in=ids, device__owner=request.user).delete()
     return redirect('my_devices')

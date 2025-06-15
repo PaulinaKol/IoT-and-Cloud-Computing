@@ -65,3 +65,14 @@ window.onclick = function(event) {
         hideRenameModal();
     }
 }
+
+// Zaznacz/odznacz wszystkie powiadomienia w tabeli powiadomień
+document.addEventListener("DOMContentLoaded", function() {
+    const selectAll = document.getElementById('select-all');
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[name="notification_ids"]');
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        });
+    }
+});

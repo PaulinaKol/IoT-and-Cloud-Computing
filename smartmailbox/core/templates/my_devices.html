@@ -36,44 +36,55 @@
     </form>
 
     <h3>Ostatnie powiadomienia ze wszystkich urządzeń</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Czas</th>
-                <th>Nazwa urządzenia</th>
-                <th>Typ zdarzenia</th>
-                <th>Zmiana wagi</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for notification in notifications %}
-            <tr>
-                <td>{{ notification.created_at|date:"Y-m-d H:i:s" }}</td>
-                <td>{{ notification.device.name }}</td>
-                <td>
-                    {% if notification.msg_type == "MAIL_IN" %}
-                        Wrzucenie przesyłki
-                    {% elif notification.msg_type == "MAIL_OUT" %}
-                        Wyciągnięcie przesyłki
-                    {% else %}
-                        {{ notification.msg_type }}
-                    {% endif %}
-                </td>
-                <td>
-                    {{ notification.previous_weight }}g → {{ notification.current_weight }}g
-                    ({% if notification.weight_difference > 0 %}
-                        +{{ notification.weight_difference }}g
-                    {% else %}
-                        {{ notification.weight_difference }}g
-                    {% endif %}
-                    )
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="4">Brak powiadomień.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <form method="post" action="{% url 'delete_notifications' %}">
+        {% csrf_token %}
+        <button type="submit" style="margin-bottom:10px;">Usuń zaznaczone</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                         <input type="checkbox" id="select-all">
+                    </th>
+                    <th>Czas</th>
+                    <th>Nazwa urządzenia</th>
+                    <th>Typ zdarzenia</th>
+                    <th>Zmiana wagi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for notification in notifications %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="notification_ids" value="{{ notification.id }}">
+                    </td>
+                    <td>{{ notification.created_at|date:"Y-m-d H:i:s" }}</td>
+                    <td>{{ notification.device.name }}</td>
+                    <td>
+                        {% if notification.msg_type == "MAIL_IN" %}
+                            Wrzucenie przesyłki
+                        {% elif notification.msg_type == "MAIL_OUT" %}
+                            Wyciągnięcie przesyłki
+                        {% else %}
+                            {{ notification.msg_type }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ notification.previous_weight }}g → {{ notification.current_weight }}g
+                        ({% if notification.weight_difference > 0 %}
+                            +{{ notification.weight_difference }}g
+                        {% else %}
+                            {{ notification.weight_difference }}g
+                        {% endif %}
+                        )
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">Brak powiadomień.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+
 
     <!-- MODAL usuwania urzadzenia-->
     <div id="myModal" class="modal">
