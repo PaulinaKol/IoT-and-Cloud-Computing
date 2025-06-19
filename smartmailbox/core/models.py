@@ -10,6 +10,8 @@ class Device(models.Model):
     detected_weight = models.FloatField(default=0)
     last_heartbeat_time = models.DateTimeField(null=True, blank=True)
     name = models.CharField(max_length=100, default="Urządzenie")
+    last_low_battery_email = models.DateTimeField(null=True, blank=True)
+    last_connection_lost_email = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.device_id} (owner: {self.owner.username})"

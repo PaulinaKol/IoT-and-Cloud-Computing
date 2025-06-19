@@ -17,4 +17,6 @@ urlpatterns = [
     path('user_settings/', views.user_settings, name='user_settings'),
     path('ajax_get_user_notification_settings/', views.ajax_get_user_notification_settings, name='ajax_get_user_notification_settings'),
     path('ajax_set_user_notification_settings/', views.ajax_set_user_notification_settings, name='ajax_set_user_notification_settings'),
+    path('api/device_event/', views.device_event_api, name='device_event_api'),
+
 ]

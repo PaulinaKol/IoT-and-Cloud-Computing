@@ -3,11 +3,17 @@ from .forms import RegisterForm
 from .forms import DeviceForm
 from .models import Device, DeviceNotification, UserNotificationSettings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.decorators.http import require_POST, require_GET
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from django.core.mail import send_mail
+from .models import UserNotificationSettings
+from core.utils.notifications import create_notification_and_email
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.utils.dateparse import parse_datetime
+from django.utils.timezone import make_aware, is_naive
 
 def register(request):
     if request.method == "POST":
@@ -41,13 +47,25 @@ def devices_list(request):
                 else:
                     status = "Niski Poziom Baterii"
                     status_class = "status-low-battery"
+                    create_notification_and_email(
+                        device,
+                        'LOW_BATTERY',
+                        extra_info={'battery_level': device.battery_level}
+                    )
             else:
                 status = "Niedostępne"
                 status_class = "status-unavailable"
+                create_notification_and_email(
+                    device,
+                    'CONNECTION_LOST'
+                )
         else:
             status = "Niedostępne"
             status_class = "status-unavailable"
-
+            create_notification_and_email(
+                device,
+                'CONNECTION_LOST'
+            )
         device_list.append({
             'name': device.name,
             'device_id': device.device_id,
@@ -85,7 +103,6 @@ def add_device(request):
         if form.is_valid():
             device = form.save(commit=False)
             device.owner = request.user
-            # Liczba urządzeń użytkownika + 1, do domyślnej nazwy
             device_count = Device.objects.filter(owner=request.user).count() + 1
             device.name = f"Urządzenie {device_count}"
             device.save()
@@ -94,7 +111,6 @@ def add_device(request):
         form = DeviceForm()
     return render(request, "add_device.html", {"form": form})
 
-from django.views.decorators.csrf import csrf_exempt  # lub użyj csrf_token w formularzu JS
 
 @login_required
 @require_POST
@@ -150,3 +166,72 @@ def ajax_set_user_notification_settings(request):
     settings.notify_lost_connection = request.POST.get('notify_lost_connection') == 'true'
     settings.save()
     return JsonResponse({'success': True})
+
+@csrf_exempt
+def device_event_api(request):
+    AUTH_TOKEN = "TEMP_TEST_TOKEN"
+    if request.headers.get('Authorization') != f'Token {AUTH_TOKEN}':
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+    
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Only POST allowed'}, status=405)
+    
+    try:
+        data = json.loads(request.body.decode())
+        device_id = data.get('device_id')
+        security_code = data.get('security_code')
+        msg_type = data.get('msg_type')
+        battery_level = data.get('battery_level')
+        timestamp = data.get('timestamp')
+        weight = data.get('weight', None)
+        
+        # ZNAJDŹ URZĄDZENIE
+        device = Device.objects.filter(device_id=device_id, security_code=security_code).first()
+        if not device:
+            return JsonResponse({'error': 'Device not found'}, status=404)
+        
+        # AKTUALIZUJ STATUSY I ZAPISZ POWIADOMIENIA
+        previous_weight = getattr(device, 'detected_weight', 0) or 0
+        if battery_level is not None:
+            device.battery_level = battery_level
+        if weight is not None:
+            device.detected_weight = weight
+        
+        from core.utils.notifications import create_notification_and_email
+        if msg_type == "HEARTBEAT":
+            if timestamp:
+                dt = parse_datetime(timestamp)
+                if dt and is_naive(dt):
+                    from django.utils import timezone
+                    dt = make_aware(dt, timezone.get_current_timezone())
+                if dt:
+                    device.last_heartbeat_time = dt
+                else:
+                    device.last_heartbeat_time = timezone.now()
+            else:
+                device.last_heartbeat_time = timezone.now()
+        if msg_type in ["MAIL_IN", "MAIL_OUT"]:
+            create_notification_and_email(
+                device,
+                msg_type,
+                previous_weight,
+                weight if weight is not None else previous_weight
+            )
+        elif msg_type == "LOW_BATTERY":
+            create_notification_and_email(
+                device,
+                msg_type,
+                extra_info={'battery_level': battery_level}
+            )
+        elif msg_type == "CONNECTION_LOST":
+            create_notification_and_email(
+                device,
+                msg_type
+            )
+        device.save()
+
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        return JsonResponse({'error': f'Invalid request: {e}'}, status=400)
+
