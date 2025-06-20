@@ -44,3 +44,17 @@ class EmailChangeForm(forms.Form):
             self.add_error('new_email', "Nowy adres email nie może być taki sam jak obecny.")
 
         return cleaned_data
+
+
+class DeleteAccountForm(forms.Form):
+    password = forms.CharField(label="Potwierdź hasło", widget=forms.PasswordInput)
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
+    def clean_password(self):
+        password = self.cleaned_data['password']
+        if not self.user.check_password(password):
+            raise forms.ValidationError("Nieprawidłowe hasło.")
+        return password

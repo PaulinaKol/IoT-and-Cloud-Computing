@@ -18,6 +18,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from .forms import EmailChangeForm
+from .forms import DeleteAccountForm
+from django.contrib.auth import logout
 
 def register(request):
     if request.method == "POST":
@@ -278,4 +280,25 @@ def change_email(request):
     return render(request, "change_email.html", {
         "form": form,
         "email_change_status": email_change_status
+    })
+
+@login_required
+def delete_account(request):
+    delete_status = ""
+    if request.method == "POST":
+        form = DeleteAccountForm(request.user, request.POST)
+        if form.is_valid():
+            user = request.user
+            logout(request)  # Wyloguj użytkownika przed usunięciem
+            user.delete()    # Usuwa również powiązane urządzenia przez CASCADE
+            delete_status = "success"
+            # Po sukcesie od razu przejdź do szablonu końcowego
+            return render(request, "delete_account_done.html")
+        else:
+            delete_status = "error"
+    else:
+        form = DeleteAccountForm(request.user)
+    return render(request, "delete_account.html", {
+        "form": form,
+        "delete_status": delete_status
     })

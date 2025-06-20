@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
-from .views import change_password, change_email
+from .views import change_password, change_email, delete_account
 
 urlpatterns = [
     path('', views.home_redirect, name='home'),
@@ -21,4 +21,5 @@ urlpatterns = [
     path('api/device_event/', views.device_event_api, name='device_event_api'),
     path('change_password/', change_password, name='change_password'),
     path('change_email/', change_email, name='change_email'),
+    path('delete_account/', delete_account, name='delete_account'),
 ]

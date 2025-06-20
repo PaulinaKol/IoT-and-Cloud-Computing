@@ -35,7 +35,7 @@
         <h3>Konto</h3>
         <a href="{% url 'change_password' %}"><button id="change-password-btn">Zmień hasło</button></a>
         <a href="{% url 'change_email' %}"><button id="change-email-btn" type="button">Zmień adres email</button></a>
-        <button id="delete-account-btn" style="color: red;">Usuń konto</button>
+        <a href="{% url 'delete_account' %}"><button id="delete-account-btn" type="button" style="color: red;">Usuń konto</button></a>
     </div>
 
     <a href="{% url 'my_devices' %}">← Powrót do urządzeń</a>

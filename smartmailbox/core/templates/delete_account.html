@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Usuń konto</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'core_css/delete_account.css' %}">
+</head>
+<body>
+    <h2>Usuń konto</h2>
+    <form method="post" id="delete-account-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="background:red;color:#fff;">Usuń konto</button>
+    </form>
+    <a href="{% url 'user_settings' %}">← Powrót</a>
+
+    <div id="modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2 id="modal-title"></h2>
+            <div id="modal-message"></div>
+            <button id="modal-ok-btn">OK</button>
+        </div>
+    </div>
+
+    <script>
+        window.deleteStatus = "{{ delete_status|default:'' }}";
+        window.deleteErrors = JSON.parse('{{ form.errors.as_json|escapejs }}');
+    </script>
+    <script src="{% static 'core_js/delete_account.js' %}"></script>
+</body>
+</html>

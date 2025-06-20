@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Konto usunięte</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'core_css/delete_account.css' %}">
+</head>
+<body>
+    <div id="modal" class="modal" style="display:block;">
+        <div class="modal-content">
+            <h2>Sukces!</h2>
+            <p>Konto zostało usunięte.</p>
+            <button id="modal-ok-btn">OK</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('modal-ok-btn').onclick = function() {
+            window.location.href = '/login/';
+        };
+        // Zamknięcie modala przez kliknięcie w tło
+        window.onclick = function(event) {
+            let modal = document.getElementById('modal');
+            if (event.target == modal) {
+                window.location.href = '/login/';
+            }
+        };
+    </script>
+</body>
+</html>
