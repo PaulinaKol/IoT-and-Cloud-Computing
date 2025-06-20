@@ -26,13 +26,14 @@
             <input type="checkbox" id="notify_lost_connection">
             Utrata połączenia z urządzeniem
         </label>
+        <br>
         <button id="save-email-notifications">Zapisz powiadomienia</button>
         <div id="email-notification-message" style="color:green; display:none;">Zapisano!</div>
     </div>
 
     <div class="settings-section" id="account">
         <h3>Konto</h3>
-        <button id="change-password-btn">Zmień hasło</button>
+        <a href="{% url 'change_password' %}"><button id="change-password-btn">Zmień hasło</button></a>
         <button id="change-email-btn">Zmień adres email</button>
         <button id="delete-account-btn" style="color: red;">Usuń konto</button>
     </div>

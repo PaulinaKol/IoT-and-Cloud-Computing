@@ -14,6 +14,9 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import make_aware, is_naive
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 def register(request):
     if request.method == "POST":
@@ -236,3 +239,21 @@ def device_event_api(request):
     except Exception as e:
         return JsonResponse({'error': f'Invalid request: {e}'}, status=400)
 
+@login_required
+def change_password(request):
+    password_change_status = ""
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # zostaw użytkownika zalogowanego
+            password_change_status = "success"
+            form = PasswordChangeForm(user=request.user)  # pusty formularz po sukcesie
+        else:
+            password_change_status = "error"
+    else:
+        form = PasswordChangeForm(user=request.user)
+    return render(request, 'change_password.html', {
+        'form': form,
+        'password_change_status': password_change_status,
+    })
