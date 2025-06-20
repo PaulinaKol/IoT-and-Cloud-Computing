@@ -138,7 +138,8 @@ def delete_notifications(request):
     ids = request.POST.getlist('notification_ids')
     if ids:
         DeviceNotification.objects.filter(id__in=ids, device__owner=request.user).delete()
-    return redirect('my_devices')
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'No IDs provided'}, status=400)
 
 @login_required
 def user_settings(request):

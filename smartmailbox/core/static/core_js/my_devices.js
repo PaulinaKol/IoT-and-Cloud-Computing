@@ -1,6 +1,7 @@
 // Modal do usuwania urządzenia:
 let currentDeviceId = null;
 let currentDeviceName = null;
+let selectedNotificationIds = new Set();
 
 function showModal(deviceId, deviceName) {
     currentDeviceId = deviceId;
@@ -22,7 +23,6 @@ function getCookie(name) {
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-            // Czy to ten cookie?
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
@@ -35,7 +35,6 @@ function getCookie(name) {
 document.getElementById('confirmBtn').onclick = function() {
     if (currentDeviceId) {
         const form = document.getElementById(`delete-form-${currentDeviceId}`);
-        // Dodaj token csrf jako input hidden, jeśli nie istnieje
         if (!form.querySelector('input[name="csrfmiddlewaretoken"]')) {
             const input = document.createElement('input');
             input.type = 'hidden';
@@ -43,7 +42,6 @@ document.getElementById('confirmBtn').onclick = function() {
             input.value = getCookie('csrftoken');
             form.appendChild(input);
         } else {
-            // Zaktualizuj wartość tokena jeśli istnieje (ważne przy odświeżeniu)
             form.querySelector('input[name="csrfmiddlewaretoken"]').value = getCookie('csrftoken');
         }
         form.submit();
@@ -52,7 +50,6 @@ document.getElementById('confirmBtn').onclick = function() {
 }
 
 
-// Modal do zmiany nazwy urządzenia:
 let renameCurrentDeviceId = null;
 
 function showRenameModal(deviceId, currentName) {
@@ -78,7 +75,7 @@ document.getElementById('renameConfirmBtn').onclick = function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                reloadDevicesList(); // Odśwież listę urządzeń AJAX-em
+                reloadDevicesList();
             } else {
                 alert('Nie udało się zmienić nazwy: ' + (data.error || 'nieznany błąd'));
             }
@@ -146,14 +143,12 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function reloadNotificationsTable() {
+    saveSelectedNotifications();
     fetch('/notifications_table/')
         .then(response => response.json())
         .then(data => {
-            const table = document.getElementById('notifications-table');
-            if (table) {
-                table.innerHTML = data.html;
-            }
-            // Ponownie podpinamy event zaznaczania wszystkich po podmianie DOM
+            document.getElementById('notifications-table-container').innerHTML = data.html;
+            restoreSelectedNotifications();
             const selectAll = document.getElementById('select-all');
             if (selectAll) {
                 selectAll.addEventListener('change', function() {
@@ -163,7 +158,7 @@ function reloadNotificationsTable() {
             }
         });
 }
-setInterval(reloadNotificationsTable, 10000); // Odświeżaj co 10 sekund:
+setInterval(reloadNotificationsTable, 10000); // Odświeżaj co 10 sekund
 
 function reloadDevicesList() {
     fetch('/devices_list/')
@@ -175,4 +170,47 @@ function reloadDevicesList() {
             }
         });
 }
-setInterval(reloadDevicesList, 10000); // Odświeżaj co 10 sekund:
+setInterval(reloadDevicesList, 10000); // Odświeżaj co 10 sekund
+
+document.addEventListener('click', function(event) {
+    if (event.target && event.target.id === 'delete-selected') {
+        
+        const checked = document.querySelectorAll('input[name="notification_ids"]:checked');
+        const ids = Array.from(checked).map(cb => cb.value);
+        if (ids.length === 0) {
+            alert('Zaznacz powiadomienia do usunięcia.');
+            return;
+        }
+        const formData = new FormData();
+        ids.forEach(id => formData.append('notification_ids', id));
+        fetch('/delete_notifications/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: formData
+        })
+        .then(resp => resp.json())
+        .then(data => {
+            if (data.success) {
+                reloadNotificationsTable();
+            } else {
+                alert(data.error || 'Błąd przy usuwaniu powiadomień.');
+            }
+        });
+    }
+});
+
+function saveSelectedNotifications() {
+    selectedNotificationIds.clear();
+    const checked = document.querySelectorAll('input[name="notification_ids"]:checked');
+    checked.forEach(cb => selectedNotificationIds.add(cb.value));
+}
+
+function restoreSelectedNotifications() {
+    const checkboxes = document.querySelectorAll('input[name="notification_ids"]');
+    checkboxes.forEach(cb => {
+        cb.checked = selectedNotificationIds.has(cb.value);
+    });
+}
+
