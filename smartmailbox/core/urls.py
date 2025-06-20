@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
-from .views import change_password
+from .views import change_password, change_email
 
 urlpatterns = [
     path('', views.home_redirect, name='home'),
@@ -20,4 +20,5 @@ urlpatterns = [
     path('ajax_set_user_notification_settings/', views.ajax_set_user_notification_settings, name='ajax_set_user_notification_settings'),
     path('api/device_event/', views.device_event_api, name='device_event_api'),
     path('change_password/', change_password, name='change_password'),
+    path('change_email/', change_email, name='change_email'),
 ]

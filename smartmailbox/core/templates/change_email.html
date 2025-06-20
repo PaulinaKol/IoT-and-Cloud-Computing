@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zmiana adresu email</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'core_css/change_email.css' %}">
+</head>
+<body>
+    <h2>Zmiana adresu email</h2>
+    <form method="post" id="email-change-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Zmień email</button>
+    </form>
+    <a href="{% url 'user_settings' %}">← Powrót</a>
+
+    <div id="modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2 id="modal-title"></h2>
+            <div id="modal-message"></div>
+            <button id="modal-ok-btn">OK</button>
+        </div>
+    </div>
+
+    <script>
+        window.emailChangeStatus = "{{ email_change_status|default:'' }}";
+        window.emailChangeErrors = JSON.parse('{{ form.errors.as_json|escapejs }}');
+    </script>
+    <script src="{% static 'core_js/change_email.js' %}"></script>
+</body>
+</html>

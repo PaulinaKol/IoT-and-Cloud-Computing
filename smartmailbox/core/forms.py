@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Device
@@ -13,3 +14,33 @@ class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = ['device_id', 'security_code']
+
+class EmailChangeForm(forms.Form):
+    current_email = forms.EmailField(
+        label="Twój aktualny adres email", disabled=True
+    )
+    new_email = forms.EmailField(label="Nowy adres email")
+    new_email_repeat = forms.EmailField(label="Powtórz nowy adres email")
+    password = forms.CharField(label="Aktualne hasło", widget=forms.PasswordInput)
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+        self.fields['current_email'].initial = user.email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_email = cleaned_data.get('new_email')
+        new_email_repeat = cleaned_data.get('new_email_repeat')
+        password = cleaned_data.get('password')
+
+        if new_email and new_email_repeat and new_email != new_email_repeat:
+            self.add_error('new_email_repeat', "Adresy email muszą być identyczne.")
+
+        if password and not self.user.check_password(password):
+            self.add_error('password', "Nieprawidłowe hasło.")
+
+        if new_email == self.user.email:
+            self.add_error('new_email', "Nowy adres email nie może być taki sam jak obecny.")
+
+        return cleaned_data

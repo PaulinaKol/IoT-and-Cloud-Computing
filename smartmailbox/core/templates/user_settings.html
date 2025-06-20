@@ -34,7 +34,7 @@
     <div class="settings-section" id="account">
         <h3>Konto</h3>
         <a href="{% url 'change_password' %}"><button id="change-password-btn">Zmień hasło</button></a>
-        <button id="change-email-btn">Zmień adres email</button>
+        <a href="{% url 'change_email' %}"><button id="change-email-btn" type="button">Zmień adres email</button></a>
         <button id="delete-account-btn" style="color: red;">Usuń konto</button>
     </div>
 

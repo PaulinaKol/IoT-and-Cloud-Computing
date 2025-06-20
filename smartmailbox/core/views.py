@@ -17,6 +17,7 @@ from django.utils.timezone import make_aware, is_naive
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from .forms import EmailChangeForm
 
 def register(request):
     if request.method == "POST":
@@ -246,9 +247,9 @@ def change_password(request):
         form = PasswordChangeForm(user=request.user, data=request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)  # zostaw użytkownika zalogowanego
+            update_session_auth_hash(request, user)
             password_change_status = "success"
-            form = PasswordChangeForm(user=request.user)  # pusty formularz po sukcesie
+            form = PasswordChangeForm(user=request.user)
         else:
             password_change_status = "error"
     else:
@@ -256,4 +257,25 @@ def change_password(request):
     return render(request, 'change_password.html', {
         'form': form,
         'password_change_status': password_change_status,
+    })
+
+@login_required
+def change_email(request):
+    email_change_status = ""
+    if request.method == "POST":
+        form = EmailChangeForm(request.user, request.POST)
+        if form.is_valid():
+            new_email = form.cleaned_data["new_email"]
+            user = request.user
+            user.email = new_email
+            user.save()
+            email_change_status = "success"
+            form = EmailChangeForm(user)
+        else:
+            email_change_status = "error"
+    else:
+        form = EmailChangeForm(request.user)
+    return render(request, "change_email.html", {
+        "form": form,
+        "email_change_status": email_change_status
     })
