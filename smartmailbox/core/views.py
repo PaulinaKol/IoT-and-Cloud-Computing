@@ -204,7 +204,6 @@ def device_event_api(request):
         if weight is not None:
             device.detected_weight = weight
         
-        from core.utils.notifications import create_notification_and_email
         if msg_type == "HEARTBEAT":
             if timestamp:
                 dt = parse_datetime(timestamp)
@@ -231,9 +230,11 @@ def device_event_api(request):
                 extra_info={'battery_level': battery_level}
             )
         elif msg_type == "CONNECTION_LOST":
-            create_notification_and_email(
-                device,
-                msg_type
+            last_notification = DeviceNotification.objects.filter(device=device).order_by('-created_at').first()
+            if not last_notification or last_notification.msg_type != "CONNECTION_LOST":
+                create_notification_and_email(
+                    device,
+                    msg_type
             )
         device.save()
 

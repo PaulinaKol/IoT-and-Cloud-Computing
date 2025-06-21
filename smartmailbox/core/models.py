@@ -12,6 +12,7 @@ class Device(models.Model):
     name = models.CharField(max_length=100, default="Urządzenie")
     last_low_battery_email = models.DateTimeField(null=True, blank=True)
     last_connection_lost_email = models.DateTimeField(null=True, blank=True)
+    registration_date = models.DateTimeField(auto_now_add=True, null=False, blank=False)
 
     def __str__(self):
         return f"{self.device_id} (owner: {self.owner.username})"
@@ -19,13 +20,12 @@ class Device(models.Model):
 class DeviceNotification(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    msg_type = models.CharField(max_length=20)  # 'MAIL_IN' lub 'MAIL_OUT'
+    msg_type = models.CharField(max_length=20)
     previous_weight = models.FloatField()
     current_weight = models.FloatField()
 
     @property
     def weight_difference(self):
-        # Wynik zaokrąglony do dwóch miejsc po przecinku
         return round(self.current_weight - self.previous_weight, 2)
 
     def __str__(self):
@@ -34,9 +34,9 @@ class DeviceNotification(models.Model):
 class UserNotificationSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     notify_mail_in = models.BooleanField(default=True)
-    notify_mail_out = models.BooleanField(default=False)
+    notify_mail_out = models.BooleanField(default=True)
     notify_low_battery = models.BooleanField(default=True)
-    notify_lost_connection = models.BooleanField(default=False)
+    notify_lost_connection = models.BooleanField(default=True)
 
     def __str__(self):
         return f"Powiadomienia {self.user.username}"
