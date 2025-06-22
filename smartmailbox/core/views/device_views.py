@@ -154,7 +154,6 @@ def device_event_api(request):
         if weight is not None:
             device.detected_weight = weight
 
-        # Obsługa typów zdarzeń
         if msg_type == "HEARTBEAT":
             if timestamp:
                 dt = parse_datetime(timestamp)

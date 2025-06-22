@@ -1,5 +1,6 @@
-from django.db import models
 import uuid
+from django.utils import timezone
+from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -9,15 +10,14 @@ class UserProfile (models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     activated = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=36, null=True, blank=True)
-    activation_code_sent_at = models.DateTimeField(null=True, blank=True)  # do limitu resendu
+    activation_code_sent_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         db_table = 'core_userprofile'
 
     def generate_activation_code(self):
-        code = str(uuid.uuid4()).replace('-', '')[:6].upper()  # np. 6 cyfr/znaków
+        code = str(uuid.uuid4()).replace('-', '')[:6].upper()
         self.activation_code = code
-        from django.utils import timezone
         self.activation_code_sent_at = timezone.now()
         self.save()
         return code
@@ -30,10 +30,6 @@ class UserProfile (models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile .objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_activation(sender, instance, **kwargs):
-    instance.userprofile.save()
 
 class Device(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -51,18 +47,28 @@ class Device(models.Model):
         return f"{self.device_id} (owner: {self.owner.username})"
 
 class DeviceNotification(models.Model):
+    MSG_TYPE_MAIL_IN = 'MAIL_IN'
+    MSG_TYPE_MAIL_OUT = 'MAIL_OUT'
+    MSG_TYPE_LOW_BATTERY = 'LOW_BATTERY'
+    MSG_TYPE_CONNECTION_LOST = 'CONNECTION_LOST'
+    MSG_TYPE_CHOICES = [
+        (MSG_TYPE_MAIL_IN, 'Przesyłka włożona'),
+        (MSG_TYPE_MAIL_OUT, 'Przesyłka wyjęta'),
+        (MSG_TYPE_LOW_BATTERY, 'Niski poziom baterii'),
+        (MSG_TYPE_CONNECTION_LOST, 'Utrata połączenia'),
+    ]
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    msg_type = models.CharField(max_length=20)
+    msg_type = models.CharField(max_length=20, choices=MSG_TYPE_CHOICES)
     previous_weight = models.FloatField()
     current_weight = models.FloatField()
-
+    
     @property
     def weight_difference(self):
         return round(self.current_weight - self.previous_weight, 2)
 
     def __str__(self):
-        return f"[{self.created_at}] {self.device.name}: {self.msg_type} ({self.weight_diff()} g)"
+        return f"[{self.created_at}] {self.device.name}: {self.msg_type} ({self.weight_difference} g)"
 
 class UserNotificationSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
