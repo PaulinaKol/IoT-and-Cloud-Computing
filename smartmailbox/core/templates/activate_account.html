@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aktywacja konta</title>
+</head>
+<body>
+    <h2>Aktywuj konto</h2>
+    <p>Twój adres email: <b>{{ user_email }}</b></p>
+    {% if show_info %}
+        <div style="color:green;">Kod został wysłany na Twój adres email.</div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Aktywuj konto</button>
+    </form>
+    <form method="get">
+        <button type="submit" name="resend" value="1">Wyślij kod ponownie</button>
+    </form>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li style="color:red;">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

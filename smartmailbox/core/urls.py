@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
-from .views import change_password, change_email, delete_account
+from .views import change_password, change_email, delete_account, activate_account, CustomLoginView
 
 urlpatterns = [
     path('', views.home_redirect, name='home'),
@@ -22,4 +22,6 @@ urlpatterns = [
     path('change_password/', change_password, name='change_password'),
     path('change_email/', change_email, name='change_email'),
     path('delete_account/', delete_account, name='delete_account'),
+    path('activate/', activate_account, name='activate_account'),
+    path('login/', CustomLoginView.as_view(template_name='login.html'), name='login'),
 ]

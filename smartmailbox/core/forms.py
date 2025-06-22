@@ -10,6 +10,9 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ["username", "email", "password1", "password2"]
 
+class ActivationCodeForm(forms.Form):
+    code = forms.CharField(label="Kod aktywacyjny", max_length=10)
+
 class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
@@ -58,3 +61,5 @@ class DeleteAccountForm(forms.Form):
         if not self.user.check_password(password):
             raise forms.ValidationError("Nieprawidłowe hasło.")
         return password
+
+

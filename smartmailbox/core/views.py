@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
 from .forms import DeviceForm
-from .models import Device, DeviceNotification, UserNotificationSettings
+from .models import Device, DeviceNotification, UserNotificationSettings, User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
 from django.utils import timezone
 from django.views.decorators.http import require_POST, require_GET
 from django.template.loader import render_to_string
 from django.http import JsonResponse
-from django.core.mail import send_mail
 from .models import UserNotificationSettings
 from core.utils.notifications import create_notification_and_email
 from django.views.decorators.csrf import csrf_exempt
@@ -20,24 +20,44 @@ from django.contrib.auth import update_session_auth_hash
 from .forms import EmailChangeForm
 from .forms import DeleteAccountForm
 from django.contrib.auth import logout
+from core.utils.notifications import send_activation_email
+from .forms import ActivationCodeForm
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from core.decorators import activation_required
+from django.contrib.auth import login
+
 
 def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')
+            user = form.save()
+            send_activation_email(user)  # WYŚLIJ kod aktywacyjny na email
+            # (Opcjonalnie możesz automatycznie zalogować użytkownika)
+            login(request, user)
+            return redirect('activate_account')
     else:
         form = RegisterForm()
     return render(request, "register.html", {"form": form})
 
-from django.utils import timezone
+
+class CustomLoginView(LoginView):
+    def form_valid(self, form):
+        # Standardowe logowanie
+        response = super().form_valid(form)
+        user = self.request.user
+        if hasattr(user, 'userprofile') and not user.userprofile.activated:
+            return redirect('activate_account')
+        return response
 
 @login_required
+@activation_required
 def my_devices(request):
     return render(request, "my_devices.html")
 
 @login_required
+@activation_required
 def devices_list(request):
     devices = Device.objects.filter(owner=request.user)
     now = timezone.now()
@@ -93,6 +113,7 @@ def home_redirect(request):
         return redirect('login')
     
 @login_required
+@activation_required
 @require_POST
 def ajax_delete_device(request):
     device_id = request.POST.get('device_id')
@@ -103,6 +124,7 @@ def ajax_delete_device(request):
     return JsonResponse({'success': False, 'error': 'Urządzenie nie istnieje'}, status=400)
 
 @login_required
+@activation_required
 def add_device(request):
     if request.method == "POST":
         form = DeviceForm(request.POST)
@@ -119,6 +141,7 @@ def add_device(request):
 
 
 @login_required
+@activation_required
 @require_POST
 def ajax_rename_device(request):
     device_id = request.POST.get('device_id')
@@ -131,6 +154,7 @@ def ajax_rename_device(request):
     return JsonResponse({'success': False, 'error': 'Nieprawidłowe dane'}, status=400)
 
 @login_required
+@activation_required
 def notifications_table(request):
     notifications = DeviceNotification.objects.filter(
         device__owner=request.user
@@ -139,6 +163,7 @@ def notifications_table(request):
     return JsonResponse({'html': html})
 
 @login_required
+@activation_required
 @require_POST
 def delete_notifications(request):
     ids = request.POST.getlist('notification_ids')
@@ -148,11 +173,13 @@ def delete_notifications(request):
     return JsonResponse({'success': False, 'error': 'No IDs provided'}, status=400)
 
 @login_required
+@activation_required
 def user_settings(request):
     # Na razie tylko placeholdery, później będą tu ustawienia pobierane z bazy
     return render(request, "user_settings.html")
 
 @login_required
+@activation_required
 @require_GET
 def ajax_get_user_notification_settings(request):
     settings, _ = UserNotificationSettings.objects.get_or_create(user=request.user)
@@ -164,6 +191,7 @@ def ajax_get_user_notification_settings(request):
     })
 
 @login_required
+@activation_required
 @require_POST
 def ajax_set_user_notification_settings(request):
     settings, _ = UserNotificationSettings.objects.get_or_create(user=request.user)
@@ -244,6 +272,7 @@ def device_event_api(request):
         return JsonResponse({'error': f'Invalid request: {e}'}, status=400)
 
 @login_required
+@activation_required
 def change_password(request):
     password_change_status = ""
     if request.method == 'POST':
@@ -263,6 +292,7 @@ def change_password(request):
     })
 
 @login_required
+@activation_required
 def change_email(request):
     email_change_status = ""
     if request.method == "POST":
@@ -284,6 +314,7 @@ def change_email(request):
     })
 
 @login_required
+@activation_required
 def delete_account(request):
     delete_status = ""
     if request.method == "POST":
@@ -302,4 +333,40 @@ def delete_account(request):
     return render(request, "delete_account.html", {
         "form": form,
         "delete_status": delete_status
+    })
+
+
+def activate_account(request):
+    user = request.user
+    profile = user.userprofile
+    form = ActivationCodeForm(request.POST or None)
+    show_info = False
+
+    # Dodaj flagę do sesji – kod wyślemy tylko przy pierwszym wejściu
+    if not profile.activated:
+        if not request.session.get('activation_email_sent', False):
+            send_activation_email(user)
+            request.session['activation_email_sent'] = True
+            show_info = True
+
+    # Obsługa ponownego wysłania kodu
+    if 'resend' in request.GET:
+        send_activation_email(user)
+        show_info = True
+
+    if request.method == 'POST' and form.is_valid():
+        if form.cleaned_data['code'].strip().upper() == profile.activation_code:
+            profile.activated = True
+            profile.activation_code = ''
+            profile.save()
+            request.session.pop('activation_email_sent', None)  # usuń flagę z sesji
+            messages.success(request, "Konto aktywowane. Możesz się już zalogować.")
+            return redirect('login')
+        else:
+            messages.error(request, "Nieprawidłowy kod aktywacyjny.")
+
+    return render(request, "activate_account.html", {
+        'form': form,
+        'user_email': user.email,
+        'show_info': show_info,
     })

@@ -10,10 +10,22 @@ from django.utils import timezone
 from core.models import DeviceNotification, UserNotificationSettings
 from django.contrib.auth.models import User
 
+def create_email(subject, message, recipient):
+    """
+    Wysyła pojedynczego maila. 
+    """
+    send_mail(
+        subject,
+        message,
+        None,
+        [recipient],
+        fail_silently=True
+    )
 
-
-def create_notification_and_email(device, msg_type, previous_weight=None, current_weight=None, extra_info=None):
-    # Jeśli msg_type to MAIL_IN/MAIL_OUT, twórz rekord DeviceNotification
+def create_device_notification(device, msg_type, previous_weight=None, current_weight=None):
+    """
+    Tylko tworzy wpis DeviceNotification — bez wysyłania maila.
+    """
     if msg_type in ['MAIL_IN', 'MAIL_OUT']:
         DeviceNotification.objects.create(
             device=device,
@@ -21,7 +33,14 @@ def create_notification_and_email(device, msg_type, previous_weight=None, curren
             previous_weight=previous_weight,
             current_weight=current_weight
         )
-    
+
+def create_notification_and_email(device, msg_type, previous_weight=None, current_weight=None, extra_info=None):
+    """
+    Oryginalna funkcja — tworzy wpis do DeviceNotification i wysyła email
+    """
+    if msg_type in ['MAIL_IN', 'MAIL_OUT']:
+        create_device_notification(device, msg_type, previous_weight, current_weight)
+
     user = device.owner
     now = timezone.now()
     try:
@@ -41,14 +60,8 @@ def create_notification_and_email(device, msg_type, previous_weight=None, curren
             f"Waga po: {current_weight} g\n\n"
             f"Dziękujemy za korzystanie ze SmartMailbox!"
         )
-        send_mail(
-            subject,
-            message,
-            None,
-            [user.email],
-            fail_silently=True
-        )
-        return  # KONIEC dla tego typu powiadomienia
+        create_email(subject, message, user.email)
+        return
 
     if msg_type == 'MAIL_OUT' and settings.notify_mail_out:
         subject = "📭 Przesyłka została wyjęta"
@@ -59,13 +72,7 @@ def create_notification_and_email(device, msg_type, previous_weight=None, curren
             f"Waga po: {current_weight} g\n\n"
             f"Dziękujemy za korzystanie ze SmartMailbox!"
         )
-        send_mail(
-            subject,
-            message,
-            None,
-            [user.email],
-            fail_silently=True
-        )
+        create_email(subject, message, user.email)
         return
 
     if msg_type == 'LOW_BATTERY' and settings.notify_low_battery:
@@ -78,13 +85,7 @@ def create_notification_and_email(device, msg_type, previous_weight=None, curren
                 f"Zalecamy wymianę baterii, aby urządzenie działało prawidłowo.\n\n"
                 f"SmartMailbox"
             )
-            send_mail(
-                subject,
-                message,
-                None,
-                [user.email],
-                fail_silently=True
-            )
+            create_email(subject, message, user.email)
             device.last_low_battery_email = now
             device.save(update_fields=['last_low_battery_email'])
         return
@@ -99,13 +100,18 @@ def create_notification_and_email(device, msg_type, previous_weight=None, curren
                 f"Prosimy sprawdzić stan urządzenia.\n\n"
                 f"SmartMailbox"
             )
-            send_mail(
-                subject,
-                message,
-                None,
-                [user.email],
-                fail_silently=True
-            )
+            create_email(subject, message, user.email)
             device.last_connection_lost_email = now
             device.save(update_fields=['last_connection_lost_email'])
         return
+
+def send_activation_email(user):
+    """
+    Wysyła kod aktywacyjny na email użytkownika (do aktywacji konta).
+    """
+    profile = user.userprofile
+    code = profile.generate_activation_code()
+    subject = "Twój kod aktywacyjny"
+    message = f"Twój kod aktywacyjny: {code}"
+    create_email(subject, message, user.email)
+    return code
