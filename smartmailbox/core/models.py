@@ -5,11 +5,14 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-class UserProfile(models.Model):
+class UserProfile (models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     activated = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=36, null=True, blank=True)
     activation_code_sent_at = models.DateTimeField(null=True, blank=True)  # do limitu resendu
+
+    class Meta:
+        db_table = 'core_userprofile'
 
     def generate_activation_code(self):
         code = str(uuid.uuid4()).replace('-', '')[:6].upper()  # np. 6 cyfr/znaków
@@ -22,13 +25,14 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"Profil użytkownika {self.user.username}"
 
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
+        UserProfile .objects.create(user=instance)
 
 @receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
+def save_user_activation(sender, instance, **kwargs):
     instance.userprofile.save()
 
 class Device(models.Model):
