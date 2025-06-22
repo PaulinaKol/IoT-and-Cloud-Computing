@@ -57,6 +57,7 @@ function showRenameModal(deviceId, currentName) {
     document.getElementById('renameModalMessage').innerText =
         `Podaj nową nazwę dla urządzenia (ID: ${deviceId}):`;
     document.getElementById('newDeviceName').value = currentName;
+    document.getElementById('renameError').innerText = '';
     document.getElementById('renameModal').style.display = "block";
 }
 
@@ -75,19 +76,23 @@ document.getElementById('renameConfirmBtn').onclick = function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                hideRenameModal();
                 reloadDevicesList();
             } else {
-                alert('Nie udało się zmienić nazwy: ' + (data.error || 'nieznany błąd'));
+                document.getElementById('renameError').innerText = data.error || 'nieznany błąd';
             }
         })
-        .catch(() => alert('Błąd połączenia z serwerem.'));
+        .catch(() => {
+            document.getElementById('renameError').innerText = 'Błąd połączenia z serwerem.';
+        });
     }
-    hideRenameModal();
-}
+};
+
 
 function hideRenameModal() {
     document.getElementById('renameModal').style.display = "none";
     renameCurrentDeviceId = null;
+    document.getElementById('renameError').innerText = '';
 }
 
 document.getElementById('confirmBtn').onclick = function() {

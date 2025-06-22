@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
 from .forms import DeviceForm
-from .models import Device, DeviceNotification, UserNotificationSettings, User
+from .models import Device, DeviceNotification, UserNotificationSettings, UserProfile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.utils import timezone
@@ -44,10 +44,16 @@ def register(request):
 
 class CustomLoginView(LoginView):
     def form_valid(self, form):
-        # Standardowe logowanie
         response = super().form_valid(form)
         user = self.request.user
-        if hasattr(user, 'userprofile') and not user.userprofile.activated:
+
+        # Upewnij się, że UserProfile istnieje:
+        profile, created = UserProfile.objects.get_or_create(
+            user=user,
+            defaults={'activated': False}
+        )
+
+        if not profile.activated:
             return redirect('activate_account')
         return response
 
@@ -127,7 +133,7 @@ def ajax_delete_device(request):
 @activation_required
 def add_device(request):
     if request.method == "POST":
-        form = DeviceForm(request.POST)
+        form = DeviceForm(request.POST, user=request.user)
         if form.is_valid():
             device = form.save(commit=False)
             device.owner = request.user
@@ -136,7 +142,7 @@ def add_device(request):
             device.save()
             return redirect('my_devices')
     else:
-        form = DeviceForm()
+        form = DeviceForm(user=request.user)
     return render(request, "add_device.html", {"form": form})
 
 
@@ -148,6 +154,9 @@ def ajax_rename_device(request):
     new_name = request.POST.get('new_name')
     device = Device.objects.filter(device_id=device_id, owner=request.user).first()
     if device and new_name:
+        # Sprawdź, czy user już ma urządzenie o tej nazwie (ale z innym ID)
+        if Device.objects.filter(owner=request.user, name=new_name).exclude(id=device.id).exists():
+            return JsonResponse({'success': False, 'error': 'Masz już urządzenie o tej nazwie!'}, status=400)
         device.name = new_name
         device.save()
         return JsonResponse({'success': True, 'new_name': new_name})

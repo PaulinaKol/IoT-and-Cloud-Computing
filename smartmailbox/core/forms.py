@@ -16,7 +16,19 @@ class ActivationCodeForm(forms.Form):
 class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
-        fields = ['device_id', 'security_code']
+        fields = ['device_id', 'security_code']  # lub inne pola do wpisania przez usera
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # Przekaż usera do formularza!
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        device_id = cleaned_data.get('device_id')
+        if self.user and device_id:
+            if Device.objects.filter(owner=self.user, device_id=device_id).exists():
+                raise forms.ValidationError("To urządzenie jest już zarejestrowane na Twoim koncie.")
+        return cleaned_data
 
 class EmailChangeForm(forms.Form):
     current_email = forms.EmailField(
