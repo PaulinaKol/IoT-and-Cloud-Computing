@@ -1,18 +1,20 @@
-import paho.mqtt.client as mqtt
-import random
-import time
-from datetime import datetime, timezone
 import os
+import time
 import json
 import threading
+import paho.mqtt.client as mqtt
+from datetime import datetime, timezone
+
 
 ASCII_ART = r"""
-                  _ _ _                     _            _          
-  _ __ ___   __ _(_) | |__   _____  __   __| | _____   _(_) ___ ___ 
- | '_ ` _ \ / _` | | | '_ \ / _ \ \/ /  / _` |/ _ \ \ / / |/ __/ _ \
- | | | | | | (_| | | | |_) | (_) >  <  | (_| |  __/\ V /| | (_|  __/
- |_| |_| |_|\__,_|_|_|_.__/ \___/_/\_\  \__,_|\___| \_/ |_|\___\___|
-                                                                    
+                            _       _             
+                           | |     | |            
+  ___ _   _ _ __ ___  _   _| | __ _| |_ ___  _ __ 
+ / __| | | | '_ ` _ \| | | | |/ _` | __/ _ \| '__|
+ \__ \ |_| | | | | | | |_| | | (_| | || (_) | |   
+ |___/\__, |_| |_| |_|\__,_|_|\__,_|\__\___/|_|   
+       __/ |                                      
+      |___/                                       
 """
 
 BROKER = "test.mosquitto.org"  # Tymczasowy broker testowy
@@ -91,11 +93,9 @@ def get_device_info():
     security_code = None
     battery = None
 
-    # Wprowadzanie ID
     show_title(device_id, security_code, battery)
     device_id = input("Podaj ID urządzenia: ")
 
-    # Wprowadzanie kodu bezpieczeństwa
     show_title(device_id, security_code, battery)
     security_code = input("Podaj kod bezpieczeństwa urządzenia: ")
 
