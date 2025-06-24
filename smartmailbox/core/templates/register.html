@@ -1,15 +1,46 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
+    <meta charset="UTF-8">
     <title>Rejestracja</title>
+    <link rel="stylesheet" href="{% static 'core_css/register.css' %}">
 </head>
 <body>
-    <h2>Rejestracja</h2>
+
+<div class="register-container">
+    <h2 class="register-title">Rejestracja</h2>
+
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">Login</label>
+            {{ form.username }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Adres e-mail</label>
+            {{ form.email }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.password1.id_for_label }}">Hasło</label>
+            {{ form.password1 }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.password2.id_for_label }}">Powtórz hasło</label>
+            {{ form.password2 }}
+        </div>
+
         <button type="submit">Zarejestruj</button>
     </form>
-    <a href="/login/">Zaloguj się</a>
+
+    <div class="extra-links">
+        <p>Masz już konto? <a href="{% url 'login' %}">Zaloguj się</a></p>
+    </div>
+</div>
+
 </body>
 </html>

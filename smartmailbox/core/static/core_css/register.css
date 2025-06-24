@@ -9,7 +9,7 @@ body {
     height: 100vh;
 }
 
-.login-container {
+.register-container {
     background-color: white;
     padding: 40px;
     border-radius: 10px;
@@ -18,7 +18,7 @@ body {
     box-sizing: border-box;
 }
 
-.login-title {
+.register-title {
     text-align: center;
     font-size: 30px;
     margin-bottom: 15px;
@@ -34,7 +34,6 @@ body {
     display: block;
     margin-bottom: 8px;
     color: #333;
-    font-weight: normal;
 }
 
 .form-group input {
