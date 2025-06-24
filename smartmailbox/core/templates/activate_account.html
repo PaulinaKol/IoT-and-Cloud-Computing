@@ -1,28 +1,40 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
+    <meta charset="UTF-8">
     <title>Aktywacja konta</title>
+    <link rel="stylesheet" href="{% static 'core_css/activate_account.css' %}">
 </head>
 <body>
-    <h2>Aktywuj konto</h2>
-    <p>Twój adres email: <b>{{ user_email }}</b></p>
-    {% if show_info %}
-        <div style="color:green;">Kod został wysłany na Twój adres email.</div>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Aktywuj konto</button>
-    </form>
-    <form method="get">
-        <button type="submit" name="resend" value="1">Wyślij kod ponownie</button>
-    </form>
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li style="color:red;">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <div class="activation-container">
+        <h2>Aktywacja konta</h2>
+        <p class="info-text">Twój adres email: <strong>{{ user_email }}</strong></p>
+
+        {% if show_info %}
+            <div class="info-success">Kod został wysłany na Twój adres email.</div>
+        {% endif %}
+
+        <form method="post" class="activation-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.code.id_for_label }}">Kod aktywacyjny</label>
+                {{ form.code }}
+            </div>
+            <button type="submit">Aktywuj konto</button>
+        </form>
+
+        <form method="get" class="resend-form">
+            <button type="submit" name="resend" value="1">Wyślij kod ponownie</button>
+        </form>
+
+        {% if messages %}
+            <ul class="error-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 </body>
 </html>
