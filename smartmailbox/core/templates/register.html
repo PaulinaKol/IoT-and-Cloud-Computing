@@ -9,7 +9,7 @@
 <body>
 
 <div class="register-container">
-    <h2 class="register-title">Rejestracja</h2>
+    <h2>Rejestracja</h2>
 
     <form method="post">
         {% csrf_token %}
@@ -17,21 +17,33 @@
         <div class="form-group">
             <label for="{{ form.username.id_for_label }}">Login</label>
             {{ form.username }}
+            {% if form.username.errors %}
+                <div class="form-error">{{ form.username.errors.0 }}</div>
+            {% endif %}
         </div>
 
         <div class="form-group">
             <label for="{{ form.email.id_for_label }}">Adres e-mail</label>
             {{ form.email }}
+            {% if form.email.errors %}
+                <div class="form-error">{{ form.email.errors.0 }}</div>
+            {% endif %}
         </div>
 
         <div class="form-group">
             <label for="{{ form.password1.id_for_label }}">Hasło</label>
             {{ form.password1 }}
+            {% if form.password1.errors %}
+                <div class="form-error">{{ form.password1.errors.0 }}</div>
+            {% endif %}
         </div>
 
         <div class="form-group">
             <label for="{{ form.password2.id_for_label }}">Powtórz hasło</label>
             {{ form.password2 }}
+            {% if form.password2.errors %}
+                <div class="form-error">{{ form.password2.errors.0 }}</div>
+            {% endif %}
         </div>
 
         <button type="submit">Zarejestruj</button>
