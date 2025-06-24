@@ -109,3 +109,50 @@ th {
 li {
     margin-bottom: 20px;
 }
+.layout-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+}
+
+.sidebar {
+    flex: 0 0 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.button-link {
+    display: inline-block;
+    background-color: #1a237e;
+    color: white;
+    text-align: center;
+    padding: 10px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.button-link:hover {
+    background-color: #0d165c;
+}
+
+.device-list-section {
+    flex: 1;
+}
+
+.notifications-section {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: auto;
+}
+
+.notifications-section h3 {
+    margin-top: 0;
+    color: #1a237e;
+}

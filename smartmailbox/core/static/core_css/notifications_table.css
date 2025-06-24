@@ -1,0 +1,50 @@
+#notifications-table-container {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#delete-selected {
+    margin-bottom: 15px;
+    background-color: #1a237e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#delete-selected:hover {
+    background-color: #0d165c;
+}
+
+#notifications-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+}
+
+#notifications-table th,
+#notifications-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+#notifications-table th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+}
+
+#notifications-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+#notifications-table tbody tr:hover {
+    background-color: #eef;
+}

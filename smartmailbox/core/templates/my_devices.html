@@ -1,31 +1,46 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'core_css/my_devices.css' %}">
-    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <meta charset="UTF-8">
     <title>Moje urządzenia</title>
+    <link rel="stylesheet" href="{% static 'core_css/my_devices.css' %}">
+    <link rel="stylesheet" href="{% static 'core_css/notifications_table.css' %}">
+    <link rel="icon" href="{% static 'favicon.ico' %}">
 </head>
 <body>
     <h2>Twoje urządzenia</h2>
-    <div id="devices-list">
-        {% include 'devices_list.html' %}
+
+    <div class="layout-container">
+
+        <!-- Lewy panel -->
+        <div class="sidebar">
+            <a href="{% url 'add_device' %}" class="button-link">Dodaj urządzenie</a>
+            <a href="{% url 'user_settings' %}" class="button-link">Ustawienia</a>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="button-link">Wyloguj się</button>
+            </form>
+        </div>
+
+        <!-- Środkowy panel – lista urządzeń -->
+        <div class="device-list-section">
+            <div id="devices-list">
+                {% include 'devices_list.html' %}
+            </div>
+        </div>
+
+        <!-- Prawy panel – historia powiadomień -->
+        <div class="notifications-section">
+            <h3>Historia zdarzeń</h3>
+            <div id="notifications-table-container">
+                {% include 'notifications_table.html' %}
+            </div>
+        </div>
+
     </div>
 
-    <a href="{% url 'add_device' %}">Dodaj urządzenie</a>
-    <form method="post" action="{% url 'logout' %}" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit">Wyloguj się</button>
-    </form>
-
-    
-    <div id="notifications-table-container">
-        {% include 'notifications_table.html' %}
-    </div>
-
-
-
-    <!-- MODAL usuwania urzadzenia-->
+    <!-- MODALE -->
     <div id="myModal" class="modal">
         <div class="modal-content">
             <p id="modalMessage"></p>
@@ -34,8 +49,6 @@
         </div>
     </div>
 
-
-    <!-- MODAL zmiany nazwy urządzenia-->
     <div id="renameModal" class="modal">
         <div class="modal-content">
             <p id="renameModalMessage"></p>
@@ -47,7 +60,5 @@
     </div>
 
     <script src="{% static 'core_js/my_devices.js' %}"></script>
-    <a href="{% url 'user_settings' %}">Ustawienia</a>
 </body>
 </html>
- 
