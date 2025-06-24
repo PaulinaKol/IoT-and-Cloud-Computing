@@ -1,71 +1,68 @@
 body {
+    margin: 0;
+    padding: 0;
     font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
+    background-color: #f4f4f4;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
 }
 
 .login-container {
-    background-color: #fff;
-    padding: 60px 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 500px;
-    max-width: 90%;
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 420px;
+    box-sizing: border-box;
 }
 
-h2 {
-    font-size: 32px;
+.login-container h2 {
     text-align: center;
+    font-size: 28px;
+    margin-bottom: 30px;
     color: #1a237e;
-    margin-top: -30px;
-    margin-bottom: 40px;
 }
-
 
 .form-group {
     margin-bottom: 20px;
 }
 
-label {
+.form-group label {
     display: block;
-    margin-bottom: 6px;
-    font-weight: bold;
+    margin-bottom: 8px;
     color: #333;
 }
 
-input[type="text"],
-input[type="password"] {
+.form-group input {
     width: 100%;
     padding: 10px;
+    box-sizing: border-box;
     border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
+    border-radius: 5px;
 }
 
 button[type="submit"] {
     width: 100%;
     padding: 12px;
     background-color: #1a237e;
-    color: #fff;
-    font-weight: bold;
+    color: white;
     border: none;
-    border-radius: 6px;
-    font-size: 16px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px;
 }
 
 button[type="submit"]:hover {
-    background-color: #283593;
+    background-color: #0d165c;
 }
 
 .extra-links {
+    margin-top: 25px;
     text-align: center;
-    margin-top: 24px;
 }
 
 .extra-links a {
@@ -75,5 +72,4 @@ button[type="submit"]:hover {
 
 .extra-links a:hover {
     text-decoration: underline;
-    color: #3949ab;
 }

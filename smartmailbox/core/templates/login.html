@@ -7,29 +7,26 @@
     <link rel="stylesheet" href="{% static 'core_css/login.css' %}">
 </head>
 <body>
-    <div class="login-wrapper">
-        <div class="login-container">
-            <h2>Logowanie</h2>
-            <form method="post">
-                {% csrf_token %}
-
-                <div class="form-group">
-                    <label for="{{ form.username.id_for_label }}">Nazwa użytkownika</label>
-                    {{ form.username }}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.password.id_for_label }}">Hasło</label>
-                    {{ form.password }}
-                </div>
-
-                <button type="submit" class="login-btn">Zaloguj</button>
-            </form>
-
-            <div class="extra-links">
-                <p>Nie masz konta? <a href="{% url 'register' %}">Zarejestruj się</a></p>
-                <p><a href="{% url 'password_reset' %}">Nie pamiętam hasła</a></p>
+    <div class="login-container">
+        <h2>Logowanie</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Nazwa użytkownika</label>
+                {{ form.username }}
             </div>
+
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Hasło</label>
+                {{ form.password }}
+            </div>
+
+            <button type="submit">Zaloguj</button>
+        </form>
+
+        <div class="extra-links">
+            <p>Nie masz konta? <a href="{% url 'register' %}">Zarejestruj się</a></p>
+            <p><a href="{% url 'password_reset' %}">Nie pamiętam hasła</a></p>
         </div>
     </div>
 </body>
