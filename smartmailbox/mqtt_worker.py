@@ -6,7 +6,10 @@ import atexit
 import requests
 import paho.mqtt.client as mqtt
 from concurrent.futures import ThreadPoolExecutor
-
+# --- Żeby ograniczyć SPAM w terminaly spowodowany samopodpisanym certyfikatem
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# ---
 
 logging.basicConfig(
     level=logging.INFO,
@@ -34,14 +37,14 @@ def on_message(client, userdata, msg):
         logger.error(f"Błąd dekodowania payload: {e}")
 
 def send_event_to_backend(payload, max_retries=3, delay=2):
-    url = "http://localhost:8000/api/device_event/"
+    url = "https://localhost:8000/api/device_event/"
     headers = {
         "Authorization": "Token TEMP_TEST_TOKEN",
         "Content-Type": "application/json"
     }
     for attempt in range(1, max_retries + 1):
         try:
-            resp = requests.post(url, json=payload, headers=headers, timeout=3)
+            resp = requests.post(url, json=payload, headers=headers, timeout=3, verify=False) # Mamy samopodpisany certyfikat SSL
             try:
                 logger.info(f"Odpowiedź backendu: {resp.status_code} {resp.json()}")
             except Exception:
