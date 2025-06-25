@@ -1,31 +1,86 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
-    <title>Zmiana adresu email</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'core_css/change_email.css' %}">
+    <meta charset="UTF-8">
+    <title>Zmiana adresu e-mail</title>
+    <link rel="stylesheet" href="{% static 'core_css/change_email.css' %}?v=3">
 </head>
 <body>
-    <h2>Zmiana adresu email</h2>
-    <form method="post" id="email-change-form">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Zmień email</button>
-    </form>
-    <a href="{% url 'user_settings' %}">← Powrót</a>
 
-    <div id="modal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <h2 id="modal-title"></h2>
-            <div id="modal-message"></div>
-            <button id="modal-ok-btn">OK</button>
-        </div>
+<div class="email-change-container">
+    <h2>Zmiana adresu e-mail</h2>
+
+    {% if email_change_status == "success" %}
+        <div class="form-success">Adres e-mail został pomyślnie zmieniony.</div>
+    {% endif %}
+
+{% if form.non_field_errors %}
+    <div class="form-error">
+        {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
     </div>
+{% endif %}
+    <form method="post">
+        {% csrf_token %}
 
-    <script>
-        window.emailChangeStatus = "{{ email_change_status|default:'' }}";
-        window.emailChangeErrors = JSON.parse('{{ form.errors.as_json|escapejs }}');
-    </script>
-    <script src="{% static 'core_js/change_email.js' %}"></script>
+        <div class="form-group">
+            <label for="{{ form.current_email.id_for_label }}">Twój aktualny adres e-mail</label>
+            {{ form.current_email }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.new_email.id_for_label }}">Nowy adres e-mail</label>
+            {{ form.new_email }}
+            {% if form.new_email.errors %}
+                {% for error in form.new_email.errors %}
+                    <div class="form-error">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.new_email_repeat.id_for_label }}">Powtórz nowy adres e-mail</label>
+            {{ form.new_email_repeat }}
+            {% if form.new_email_repeat.errors %}
+                {% for error in form.new_email_repeat.errors %}
+                    <div class="form-error">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.password.id_for_label }}">Potwierdź hasło</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                    <div class="form-error">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <button type="submit">Zmień e-mail</button>
+    </form>
+
+    <a href="{% url 'user_settings' %}" class="back-link">← Powrót do ustawień</a>
+</div>
 </body>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const translations = {
+        "Enter a valid email address.": "Wprowadź poprawny adres e-mail.",
+        "The two email fields didn’t match.": "Podane adresy e-mail nie są identyczne.",
+        "This field is required.": "To pole jest wymagane.",
+        "Incorrect password.": "Nieprawidłowe hasło."
+    };
+
+    document.querySelectorAll(".form-error").forEach(elem => {
+        const text = elem.textContent.trim();
+        if (translations[text]) {
+            elem.textContent = translations[text];
+        }
+    });
+});
+</script>
 </html>
