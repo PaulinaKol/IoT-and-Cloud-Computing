@@ -1,31 +1,72 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
+    <meta charset="UTF-8">
     <title>Usuń konto</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'core_css/delete_account.css' %}">
+    <link rel="stylesheet" href="{% static 'core_css/delete_account.css' %}?v=2">
 </head>
 <body>
+
+<div class="delete-account-container">
     <h2>Usuń konto</h2>
+
+    {% if form.non_field_errors %}
+        <div class="form-error">
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <form method="post" id="delete-account-form">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" style="background:red;color:#fff;">Usuń konto</button>
-    </form>
-    <a href="{% url 'user_settings' %}">← Powrót</a>
 
-    <div id="modal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <h2 id="modal-title"></h2>
-            <div id="modal-message"></div>
-            <button id="modal-ok-btn">OK</button>
+        <div class="form-group">
+            <label for="{{ form.password.id_for_label }}">Potwierdź hasło</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                    <div class="form-error">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
         </div>
-    </div>
 
-    <script>
-        window.deleteStatus = "{{ delete_status|default:'' }}";
-        window.deleteErrors = JSON.parse('{{ form.errors.as_json|escapejs }}');
-    </script>
-    <script src="{% static 'core_js/delete_account.js' %}"></script>
+        <button type="submit" class="danger-button">Usuń konto</button>
+    </form>
+
+    <a href="{% url 'user_settings' %}" class="back-link">← Powrót do ustawień</a>
+</div>
+
+<!-- MODAL do błędów -->
+<div id="modal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h2 id="modal-title"></h2>
+        <div id="modal-message"></div>
+        <button id="modal-ok-btn">OK</button>
+    </div>
+</div>
+
+<script>
+    const translations = {
+        "Incorrect password.": "Nieprawidłowe hasło.",
+        "This field is required.": "To pole jest wymagane."
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.form-error').forEach(elem => {
+            const txt = elem.textContent.trim();
+            if (translations[txt]) {
+                elem.textContent = translations[txt];
+            }
+        });
+    });
+</script>
+
+<script>
+    window.deleteStatus = "{{ delete_status|default:'' }}";
+    window.deleteErrors = JSON.parse('{{ form.errors.as_json|escapejs }}');
+</script>
+<script src="{% static 'core_js/delete_account.js' %}"></script>
 </body>
 </html>
