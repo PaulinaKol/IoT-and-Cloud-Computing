@@ -1,45 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'core_css/my_devices.css' %}">
-    <link rel="stylesheet" href="{% static 'core_css/user_settings.css' %}">
+    <meta charset="UTF-8">
     <title>Ustawienia użytkownika</title>
+    <link rel="stylesheet" href="{% static 'core_css/user_settings.css' %}?v=1.0">
 </head>
 <body>
-    <h2>Ustawienia użytkownika</h2>
-    <div class="settings-section" id="email-notifications">
-        <h3>Powiadomienia Email</h3>
-        <label class="settings-option">
-            <input type="checkbox" id="notify_in" checked>
-            Wykrycie wrzucenia przesyłki
-        </label>
-        <label class="settings-option">
-            <input type="checkbox" id="notify_out">
-            Wykrycie wyciągnięcia przesyłki
-        </label>
-        <label class="settings-option">
-            <input type="checkbox" id="notify_low_battery" checked>
-            Informacja o niskim poziomie baterii urządzenia
-        </label>
-        <label class="settings-option">
-            <input type="checkbox" id="notify_lost_connection">
-            Utrata połączenia z urządzeniem
-        </label>
-        <br>
-        <button id="save-email-notifications">Zapisz powiadomienia</button>
-        <div id="email-notification-message" style="color:green; display:none;">Zapisano!</div>
+    <div class="settings-container">
+        <h2>Ustawienia użytkownika</h2>
+
+        <div class="settings-section" id="email-notifications">
+            <h3>Powiadomienia Email</h3>
+            <label class="settings-option">
+                <input type="checkbox" id="notify_in" checked>
+                Wykrycie wrzucenia przesyłki
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="notify_out">
+                Wykrycie wyciągnięcia przesyłki
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="notify_low_battery" checked>
+                Informacja o niskim poziomie baterii
+            </label>
+            <label class="settings-option">
+                <input type="checkbox" id="notify_lost_connection">
+                Utrata połączenia z urządzeniem
+            </label>
+
+            <button id="save-email-notifications" class="green-button">Zapisz powiadomienia</button>
+            <div id="email-notification-message" class="notification-success">Zapisano!</div>
+        </div>
+
+        <div class="settings-section" id="account">
+            <h3>Konto</h3>
+            <div class="settings-actions">
+                <a href="{% url 'change_password' %}" class="settings-link-button">Zmień hasło</a>
+                <a href="{% url 'change_email' %}" class="settings-link-button">Zmień adres email</a>
+                <a href="{% url 'delete_account' %}" class="settings-link-button red-button">Usuń konto</a>
+            </div>
+        </div>
+
+        <a href="{% url 'my_devices' %}" class="back-link">&larr; Powrót do urządzeń</a>
     </div>
 
-    <div class="settings-section" id="account">
-        <h3>Konto</h3>
-        <a href="{% url 'change_password' %}"><button id="change-password-btn">Zmień hasło</button></a>
-        <a href="{% url 'change_email' %}"><button id="change-email-btn" type="button">Zmień adres email</button></a>
-        <a href="{% url 'delete_account' %}"><button id="delete-account-btn" type="button" style="color: red;">Usuń konto</button></a>
-    </div>
-
-    <a href="{% url 'my_devices' %}">← Powrót do urządzeń</a>
-
-     <script src="{% static 'core_js/user_settings.js' %}"></script>
+    <script src="{% static 'core_js/user_settings.js' %}"></script>
+    <script>
+    document.getElementById('save-email-notifications').addEventListener('click', () => {
+        const msg = document.getElementById('email-notification-message');
+        msg.style.display = 'block';
+        setTimeout(() => {
+            msg.style.display = 'none';
+        }, 2000);
+    });
+    </script>
 </body>
 </html>
