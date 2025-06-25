@@ -9,21 +9,20 @@
     <link rel="icon" href="{% static 'favicon.ico' %}">
 </head>
 <body>
-    <div class="header-bar">
+<div class="header-bar">
+    <div class="header-left">
+        <a href="{% url 'user_settings' %}" class="settings-toggle">
+            <span class="icon-spin">⚙️</span>
+            <span class="settings-label">Ustawienia</span>
+        </a>
+    </div>
     <h2>Twoje urządzenia</h2>
     <form method="post" action="{% url 'logout' %}" class="logout-form">
         {% csrf_token %}
         <button type="submit" class="logout-button">Wyloguj się</button>
     </form>
-    </div>
-
+</div>
     <div class="layout-container">
-
-        <!-- Lewy panel -->
-        <div class="sidebar">
-            <a href="{% url 'user_settings' %}" class="button-link">Ustawienia</a>
-        </div>
-
         <!-- Środkowy panel – lista urządzeń -->
         <div class="device-list-section">
             <div class="device-list-container">

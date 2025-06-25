@@ -201,26 +201,37 @@ li {
 }
 
 .header-bar {
-    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #1a237e;
     color: white;
-    padding: 20px;
+    padding: 10px 16px;
     margin: 0;
-    text-align: center; 
 }
 
 .header-bar h2 {
     margin: 0;
-    font-size: 28px;
+    font-size: 30px;
     color: white;
+    text-align: center;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+
+.header-left {
+    flex-shrink: 0;
 }
 
 .logout-form {
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
     margin: 0;
+}
+
+.header-left,
+.logout-form {
+    flex-shrink: 0;
+    width: 130px;
 }
 
 .logout-button {
@@ -264,3 +275,87 @@ li {
     margin-top: 20px;
 }
 
+.settings-button {
+    background-color: #607d8b;
+    transition: background-color 0.3s ease;
+}
+
+.settings-button:hover {
+    background-color: #455a64;
+}
+
+.icon-spin {
+    font-size: 20px;
+    margin-right: 0;
+    transition: transform 0.4s ease;
+    flex-shrink: 0;
+}
+
+
+.settings-button:hover .icon-spin {
+    transform: rotate(180deg);
+}
+
+.settings-button {
+    transition: transform 0.2s ease;
+}
+
+.settings-button:hover {
+    transform: scale(1.05);
+}
+
+.settings-toggle {
+    display: inline-flex;
+    align-items: center;
+    background-color: #ffffff;
+    color: rgb(255, 255, 255);
+    padding: 8px;
+    border-radius: 50%;
+    font-weight: bold;
+    overflow: hidden;
+    width: 36px;
+    height: 36px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    position: relative;
+    font-size: 0; 
+}
+
+.settings-toggle:hover {
+    width: 130px;
+    border-radius: 20px;
+    background-color: #7ab7d3;
+}
+
+
+.icon-spin {
+    font-size: 16px;
+    margin-left: 8px;
+    transition: transform 0.4s ease;
+    flex-shrink: 0;
+}
+
+.settings-toggle:hover .icon-spin {
+    transform: rotate(180deg);
+}
+
+.settings-label {
+    opacity: 0;
+    font-size: 13px;
+    transition: opacity 0.3s ease, margin 0.3s ease;
+    margin-left: 0;
+    pointer-events: none;
+    font-size: 15px;
+}
+
+.settings-toggle:hover .settings-label {
+    opacity: 1;
+    margin-left: 6px;
+}
+
+.settings-toggle,
+.settings-toggle:hover,
+.settings-toggle:focus {
+    text-decoration: none;
+}
