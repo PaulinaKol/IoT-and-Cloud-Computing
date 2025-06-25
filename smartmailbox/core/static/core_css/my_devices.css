@@ -7,12 +7,9 @@ body {
 }
 
 h2 {
-    text-align: center;
-    background-color: #1a237e;
-    color: white;
-    padding: 20px 0;
     margin: 0;
     font-size: 28px;
+    color: white;
 }
 
 a {
@@ -201,4 +198,42 @@ li {
 
 .device-buttons {
     margin-top: 10px;
+}
+
+.header-bar {
+    position: relative;
+    background-color: #1a237e;
+    color: white;
+    padding: 20px;
+    margin: 0;
+    text-align: center; 
+}
+
+.header-bar h2 {
+    margin: 0;
+    font-size: 28px;
+    color: white;
+}
+
+.logout-form {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    margin: 0;
+}
+
+.logout-button {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.logout-button:hover {
+    background-color: #b71c1c;
 }

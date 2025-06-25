@@ -9,7 +9,13 @@
     <link rel="icon" href="{% static 'favicon.ico' %}">
 </head>
 <body>
+    <div class="header-bar">
     <h2>Twoje urządzenia</h2>
+    <form method="post" action="{% url 'logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Wyloguj się</button>
+    </form>
+    </div>
 
     <div class="layout-container">
 
@@ -17,10 +23,6 @@
         <div class="sidebar">
             <a href="{% url 'add_device' %}" class="button-link">Dodaj urządzenie</a>
             <a href="{% url 'user_settings' %}" class="button-link">Ustawienia</a>
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="button-link">Wyloguj się</button>
-            </form>
         </div>
 
         <!-- Środkowy panel – lista urządzeń -->
