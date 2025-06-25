@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Logowanie</title>
-    <link rel="stylesheet" href="{% static 'core_css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'core_css/login.css' %}?v=3">
 </head>
 <body>
 
@@ -17,11 +17,20 @@
         <div class="form-group">
             <label for="{{ form.username.id_for_label }}">Login</label>
             {{ form.username }}
+            {% if form.username.errors %}
+                <div class="form-error">{{ form.username.errors.0 }}</div>
+            {% endif %}
         </div>
 
         <div class="form-group">
             <label for="{{ form.password.id_for_label }}">Hasło</label>
             {{ form.password }}
+            {% if form.password.errors %}
+                <div class="form-error">{{ form.password.errors.0 }}</div>
+            {% endif %}
+            {% if form.non_field_errors %}
+                <div class="form-error">{{ form.non_field_errors.0 }}</div>
+            {% endif %}
         </div>
 
         <button type="submit">Zaloguj</button>
@@ -29,9 +38,25 @@
 
     <div class="extra-links">
         <p>Nie masz konta? <a href="{% url 'register' %}">Zarejestruj się</a></p>
-        <p><a href="{% url 'password_reset' %}">Nie pamiętasz hasła?</a></p>
+        <p><a href="{% url 'password_reset' %}">Zapomniałeś hasła?</a></p>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const translations = {
+        "Please enter a correct username and password. Note that both fields may be case-sensitive.": "Nieprawidłowy login lub hasło.",
+        "This field is required.": "To pole jest wymagane."
+    };
+
+    document.querySelectorAll(".form-error").forEach(elem => {
+        const text = elem.textContent.trim();
+        if (translations[text]) {
+            elem.textContent = translations[text];
+        }
+    });
+});
+</script>
 
 </body>
 </html>
