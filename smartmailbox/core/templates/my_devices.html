@@ -21,7 +21,6 @@
 
         <!-- Lewy panel -->
         <div class="sidebar">
-            <a href="{% url 'add_device' %}" class="button-link">Dodaj urządzenie</a>
             <a href="{% url 'user_settings' %}" class="button-link">Ustawienia</a>
         </div>
 
@@ -31,6 +30,9 @@
                 <h3 class="section-title">Lista urządzeń</h3>
                 <div id="devices-list">
                     {% include 'devices_list.html' %}
+                </div>
+                <div class="add-device-wrapper">
+                    <a href="{% url 'add_device' %}" class="add-device-button">Dodaj urządzenie</a>
                 </div>
             </div>
         </div>
