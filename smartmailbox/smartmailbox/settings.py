@@ -128,10 +128,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = "SmartMailbox <no-reply@smartmailbox.local>"
 
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'poczta.interia.pl'
+#EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
+#EMAIL_USE_SSL = False
+#EMAIL_HOST_USER = 'smartmailbox@interia.pl' 
+#EMAIL_HOST_PASSWORD = ''
+#DEFAULT_FROM_EMAIL = 'SmartMailbox <smartmailbox@interia.pl>'
+
 IOT_AUTH_TOKEN = "TEMP_TEST_TOKEN"
 
-#EMAIL_HOST = "smtp.example.com"  # np. smtp.gmail.com
-#EMAIL_PORT = 587
-#EMAIL_HOST_USER = "twojemail@example.com"
-#EMAIL_HOST_PASSWORD = "twoje_haslo"
-#EMAIL_USE_TLS = True
+
