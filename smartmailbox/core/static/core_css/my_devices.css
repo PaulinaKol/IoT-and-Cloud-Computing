@@ -141,6 +141,7 @@ th {
     flex-direction: column;
     justify-content: flex-start;
     height: 100%;
+    min-height: 400px;
 }
 
 #devices-list {
@@ -155,6 +156,7 @@ th {
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     height: 100%;
+    min-height: 400px;
 }
 
 .section-title {
@@ -165,14 +167,6 @@ th {
     color: #1a237e;
 }
 
-.device-list-container,
-.notifications-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    height: 100%;
-}
 
 li {
     margin-bottom: 20px;
@@ -208,10 +202,3 @@ li {
 .device-buttons {
     margin-top: 10px;
 }
-
-.device-list-section,
-.notifications-section {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
-

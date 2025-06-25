@@ -1,6 +1,7 @@
 #notifications-table-container {
     padding: 0;
     margin-top: 10px;
+    overflow-x: auto;
 }
 
 
