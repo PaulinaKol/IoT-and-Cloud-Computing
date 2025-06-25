@@ -43,7 +43,7 @@ class CustomLoginView(LoginView):
         )
 
         if not profile.activated:
-            return HttpResponseRedirect('/activate_account/')
+            return redirect('activate_account')
         return response
     
 @login_required
