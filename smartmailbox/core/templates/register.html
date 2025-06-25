@@ -36,6 +36,14 @@
             {% if form.password1.errors %}
                 <div class="form-error">{{ form.password1.errors.0 }}</div>
             {% endif %}
+            <div class="password-rules" id="password-rules" style="display: none;">
+                <ul>
+                    <li>Hasło nie może być zbyt podobne do innych danych osobowych.</li>
+                    <li>Hasło musi mieć co najmniej 8 znaków.</li>
+                    <li>Hasło nie może być powszechnie używanym hasłem.</li>
+                    <li>Hasło nie może składać się wyłącznie z cyfr.</li>
+                </ul>
+            </div>
         </div>
 
         <div class="form-group">
@@ -53,6 +61,41 @@
         <p>Masz już konto? <a href="{% url 'login' %}">Zaloguj się</a></p>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const map = {
+        "A user with that username already exists.": "Użytkownik o tej nazwie już istnieje.",
+        "The two password fields didn’t match.": "Hasła nie są identyczne.",
+        "This password is too short. It must contain at least 8 characters.": "Hasło musi mieć co najmniej 8 znaków.",
+        "This password is too common.": "Hasło jest zbyt popularne.",
+        "This password is entirely numeric.": "Hasło nie może składać się wyłącznie z cyfr.",
+        "This password is too similar to your other personal information.": "Hasło jest zbyt podobne do danych osobowych."
+    };
+
+    document.querySelectorAll(".form-error").forEach(div => {
+        const eng = div.textContent.trim();
+        if (map[eng]) {
+            div.textContent = map[eng];
+        }
+    });
+
+    const passInput = document.getElementById("id_password1");
+    const rules = document.getElementById("password-rules");
+
+    if (passInput) {
+        passInput.addEventListener("focus", () => {
+            rules.style.display = "block";
+        });
+
+        // Usuń to, aby reguły nie znikały:
+        // passInput.addEventListener("blur", () => {
+        //     rules.style.display = "none";
+        // });
+    }
+});
+</script>
+
 
 </body>
 </html>

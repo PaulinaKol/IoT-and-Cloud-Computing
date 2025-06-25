@@ -31,7 +31,9 @@
         {% if messages %}
             <ul class="error-messages">
                 {% for message in messages %}
-                    <li>{{ message }}</li>
+                    {% if 'aktywowane' not in message|stringformat:"s"|lower %}
+                <li>{{ message }}</li>
+                {% endif %}
                 {% endfor %}
             </ul>
         {% endif %}

@@ -1,55 +1,45 @@
 body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    color: #333;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
 }
 
 .register-container {
-    background-color: white;
-    padding: 40px;
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 420px;
-    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.register-container h2 {
+h2 {
     text-align: center;
-    font-size: 28px;
-    margin-bottom: 30px;
-    margin-top: -10px;
     color: #1a237e;
-}
-
-.register-title {
-    text-align: center;
-    font-size: 30px;
-    margin-bottom: 15px;
-    margin-top: -10px;
-    color: #1a237e;
+    margin-bottom: 20px;
 }
 
 .form-group {
     margin-bottom: 20px;
 }
 
-.form-group label {
+label {
     display: block;
-    margin-bottom: 8px;
-    color: #333;
+    margin-bottom: 6px;
+    font-weight: bold;
 }
 
-.form-group input {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
     width: 100%;
     padding: 10px;
-    box-sizing: border-box;
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
 }
 
 button[type="submit"] {
@@ -58,34 +48,52 @@ button[type="submit"] {
     background-color: #1a237e;
     color: white;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    border-radius: 6px;
     font-weight: bold;
-    font-size: 16px;
-    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 button[type="submit"]:hover {
     background-color: #0d165c;
 }
 
+.form-error {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
 .extra-links {
-    margin-top: 25px;
     text-align: center;
+    margin-top: 15px;
 }
 
 .extra-links a {
     color: #1a237e;
     text-decoration: none;
+    font-weight: bold;
 }
 
 .extra-links a:hover {
     text-decoration: underline;
 }
 
-.form-error {
-    color: red;
-    font-size: 14px;
-    margin-top: 6px;
+.password-rules {
+    background-color: #f0f0f0;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #444;
 }
 
+.password-rules ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.password-rules li {
+    margin-bottom: 6px;
+}
