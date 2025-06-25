@@ -25,16 +25,21 @@
 
         <!-- Środkowy panel – lista urządzeń -->
         <div class="device-list-section">
-            <div id="devices-list">
-                {% include 'devices_list.html' %}
+            <div class="device-list-container">
+                <h3 class="section-title">Lista urządzeń</h3>
+                <div id="devices-list">
+                    {% include 'devices_list.html' %}
+                </div>
             </div>
         </div>
 
         <!-- Prawy panel – historia powiadomień -->
         <div class="notifications-section">
-            <h3>Historia zdarzeń</h3>
-            <div id="notifications-table-container">
-                {% include 'notifications_table.html' %}
+            <div class="notifications-container">
+                <h3 class="section-title">Historia zdarzeń</h3>
+                <div id="notifications-table-container">
+                    {% include 'notifications_table.html' %}
+                </div>
             </div>
         </div>
 
