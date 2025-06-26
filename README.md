@@ -22,6 +22,9 @@ Projekt wpisuje się w rozwój rozwiązań Smart Home i Smart Living, oferując 
 
 ### 👤 User Stories
 
+-  **Jako użytkownik**, chciałbym mieć możliwość rejestracji i logowania się do systemu.
+-  **Jako użytkownik**, chciałbym móc dodać swoje urządzenie i nadać mu nazwę.
+-  **Jako użytkownik**, chciałbym móc zarządzać ustawieniami swojego konta.
 -  **Jako użytkownik**, chciałbym otrzymać powiadomienie za każdym razem, gdy w mojej skrzynce zostanie umieszczony list / paczka.  
 -  **Jako użytkownik**, chciałbym otrzymać powiadomienie za każdym razem, gdy list / paczka zostanie odebrana.  
 -  **Jako użytkownik**, chciałbym móc zdalnie sprawdzić poziom naładowania mojego urządzenia.  
@@ -31,27 +34,27 @@ Projekt wpisuje się w rozwój rozwiązań Smart Home i Smart Living, oferując 
 ---
 
 ## 📋 Wymagania projektu
-Nie wszystkie są obowiązkowe, ale tym więcej tym lepsza ocena.
+
 ❌/🚧/✅
 
-- 🚧 Kontekst Biznesowy
-- ❌ C4 - Diagram Architektury - Poziom Kontekstu
-- ❌ C4 - Diagram Architektury - Poziom Kontenerów
-- ❌ Kalkulator kosztów Azure/AWS
-- 🚧 Symulator Urządzenia IoT
-- ❌ Serwis MQTT Broker
-- 🚧 Baza Danych
-- 🚧 REST API
-- ❌ Instrukcje Deploy'owania
+- ✅ Kontekst Biznesowy
+- 🚧 C4 - Diagram Architektury - Poziom Kontekstu
+- 🚧 C4 - Diagram Architektury - Poziom Kontenerów
+- 🚧 Kalkulator kosztów Azure/AWS
+- ✅ Symulator Urządzenia IoT
+- ✅ Serwis MQTT Broker
+- ✅ Baza Danych
+- ✅ REST API
+- 🚧 Instrukcje Deploy'owania
 - ❌ Instruckje Testowania
 - 🚧 Czy wszystkie wymagania biznesowe zostały pokryte?
-- ❌ Czy projekt działa?
+- ✅ Czy projekt działa?
 - ❌ "Infrastructure as Code"
 - ❌ Kolekcja Postman
-- 🚧 Frontend
-- 🚧 Własny system rejestracji
-- 🚧 Możliwość zarządzania użytkownikami
-- 🚧 Możliwość zarządzania urządzeniami
+- ✅ Frontend
+- ✅ Własny system logowania i rejestracji
+- ✅ Możliwość zarządzania ustawieniami użytkownika
+- ✅ Możliwość zarządzania urządzeniami
 - 🚧 Czy rozwiązanie jest bezpieczne?
 - ❌ Zdalna konfiguracja urządzenia
 
