@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -102,14 +104,15 @@ WSGI_APPLICATION = 'smartmailbox.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DATABASE_NAME', 'postgres'),
+        'NAME': os.environ.get('DATABASE_NAME', 'smartmailbox-db'),
         'USER': os.environ.get('DATABASE_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
-        'HOST': os.environ.get('DATABASE_HOST', ''),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'FluffyFox12!'),
+        'HOST': os.environ.get('DATABASE_HOST', 'smartmailbox-db.postgres.database.azure.com'),
         'PORT': os.environ.get('DATABASE_PORT', '5432'),
         'OPTIONS': {'sslmode': os.environ.get('DATABASE_SSLMODE', 'require')},
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
