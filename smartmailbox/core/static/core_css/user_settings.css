@@ -1,18 +1,121 @@
-.settings-section { 
-    margin-bottom: 32px; 
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
 }
-.settings-label { 
-    display: block; 
-    margin-bottom: 8px; 
-    font-weight: bold; 
+
+.settings-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
-.settings-option { 
-    margin-bottom: 6px; 
+
+h2 {
+    text-align: center;
+    font-size: 28px;
+    color: #1a237e;
+    margin-bottom: 30px;
 }
-#delete-account-btn {
-    color: red;
+
+.settings-section {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 25px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
 }
-#email-notification-message {
+
+.settings-section h3 {
+    margin-top: 0;
+    color: #1a237e;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.settings-option {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.2);
+}
+
+.green-button {
+    background-color: #388e3c;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.green-button:hover {
+    background-color: #2e7d32;
+}
+
+.red-button {
+    background-color: #c62828;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 10px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.red-button:hover {
+    background-color: #b71c1c;
+}
+
+.settings-link-button {
+    display: inline-block;
+    background-color: #1a237e;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    margin: 6px 6px 0 0;
+    font-weight: bold;
+}
+
+.settings-link-button:hover {
+    background-color: #0d165c;
+}
+
+.settings-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.notification-success {
+    margin-top: 10px;
     color: green;
+    font-weight: bold;
     display: none;
+}
+
+.back-link {
+    display: inline-block;
+    color: #34248e;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+.back-link:hover {
+    text-decoration: underline;
 }

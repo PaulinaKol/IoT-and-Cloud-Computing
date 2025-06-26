@@ -1,31 +1,52 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'core_css/my_devices.css' %}">
-    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <meta charset="UTF-8">
     <title>Moje urządzenia</title>
+    <link rel="stylesheet" href="{% static 'core_css/my_devices.css' %}">
+    <link rel="stylesheet" href="{% static 'core_css/notifications_table.css' %}">
+    <link rel="icon" href="{% static 'favicon.ico' %}">
 </head>
 <body>
+<div class="header-bar">
+    <div class="header-left">
+        <a href="{% url 'user_settings' %}" class="settings-toggle">
+            <span class="icon-spin">⚙️</span>
+            <span class="settings-label">Ustawienia</span>
+        </a>
+    </div>
     <h2>Twoje urządzenia</h2>
-    <div id="devices-list">
-        {% include 'devices_list.html' %}
-    </div>
-
-    <a href="{% url 'add_device' %}">Dodaj urządzenie</a>
-    <form method="post" action="{% url 'logout' %}" style="display:inline;">
+    <form method="post" action="{% url 'logout' %}" class="logout-form">
         {% csrf_token %}
-        <button type="submit">Wyloguj się</button>
+        <button type="submit" class="logout-button">Wyloguj się</button>
     </form>
+</div>
+    <div class="layout-container">
+        <!-- Lewy panel – lista urządzeń -->
+        <div class="device-list-section">
+            <div class="device-list-container">
+                <h3 class="section-title">Lista urządzeń</h3>
+                <div id="devices-list">
+                    {% include 'devices_list.html' %}
+                </div>
+                <div class="add-device-wrapper">
+                    <a href="{% url 'add_device' %}" class="add-device-button">Dodaj urządzenie</a>
+                </div>
+            </div>
+        </div>
 
-    
-    <div id="notifications-table-container">
-        {% include 'notifications_table.html' %}
+        <!-- Prawy panel – historia powiadomień -->
+        <div class="notifications-section">
+            <h3 class="section-title">Historia zdarzeń</h3>
+                <div id="notifications-table-container">
+                    {% include 'notifications_table.html' %}
+                </div>
+        </div>
+
     </div>
 
-
-
-    <!-- MODAL usuwania urzadzenia-->
+    <!-- MODALE -->
     <div id="myModal" class="modal">
         <div class="modal-content">
             <p id="modalMessage"></p>
@@ -34,8 +55,6 @@
         </div>
     </div>
 
-
-    <!-- MODAL zmiany nazwy urządzenia-->
     <div id="renameModal" class="modal">
         <div class="modal-content">
             <p id="renameModalMessage"></p>
@@ -47,7 +66,5 @@
     </div>
 
     <script src="{% static 'core_js/my_devices.js' %}"></script>
-    <a href="{% url 'user_settings' %}">Ustawienia</a>
 </body>
 </html>
- 

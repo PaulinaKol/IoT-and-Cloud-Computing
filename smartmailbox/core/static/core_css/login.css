@@ -6,19 +6,20 @@ body {
     padding: 0;
 }
 
-.email-change-container {
+.login-container {
     max-width: 400px;
-    margin: 60px auto;
-    padding: 25px 20px;
-    background-color: #ffffff;
+    margin: 80px auto;
+    background-color: #fff;
+    padding: 30px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
+.login-title {
     text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
     color: #1a237e;
-    margin-bottom: 25px;
 }
 
 .form-group {
@@ -27,24 +28,18 @@ h2 {
 
 label {
     display: block;
-    font-weight: bold;
     margin-bottom: 6px;
+    font-weight: bold;
 }
 
-input[type="email"],
-input[type="password"],
-input[readonly] {
+input[type="text"],
+input[type="password"] {
     width: 100%;
     padding: 10px;
-    font-size: 14px;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 5px;
+    font-size: 14px;
     box-sizing: border-box;
-    background-color: #f9f9f9;
-}
-
-input[readonly] {
-    color: #777;
 }
 
 button[type="submit"] {
@@ -57,6 +52,7 @@ button[type="submit"] {
     font-weight: bold;
     font-size: 15px;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 button[type="submit"]:hover {
@@ -65,29 +61,22 @@ button[type="submit"]:hover {
 
 .form-error {
     color: red;
-    font-size: 13px;
-    margin-top: 6px;
-}
-
-.form-success {
-    background-color: #d7ffd9;
-    border: 1px solid #388e3c;
-    color: #256029;
-    padding: 10px 14px;
-    margin-bottom: 20px;
-    border-radius: 6px;
     font-size: 14px;
+    margin-top: 6px;
+    display: block;
 }
 
-.back-link {
-    display: block;
+.extra-links {
+    margin-top: 20px;
     text-align: center;
+}
+
+.extra-links a {
     color: #1a237e;
     text-decoration: none;
     font-weight: bold;
-    margin-top: 18px;
 }
 
-.back-link:hover {
+.extra-links a:hover {
     text-decoration: underline;
 }
