@@ -1,0 +1,82 @@
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 80px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-title {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #1a237e;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #1a237e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+    background-color: #0d165c;
+}
+
+.form-error {
+    color: red;
+    font-size: 14px;
+    margin-top: 6px;
+    display: block;
+}
+
+.extra-links {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.extra-links a {
+    color: #1a237e;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.extra-links a:hover {
+    text-decoration: underline;
+}

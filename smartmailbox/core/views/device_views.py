@@ -52,7 +52,7 @@ def devices_list(request):
             'security_code': device.security_code,
             'battery_level': device.battery_level,
             'display_battery': '--%' if status == "Niedostępne" else f"{device.battery_level}%",
-            'detected_weight': '---' if status == "Niedostępne" else f"{device.detected_weight}%",
+            'detected_weight': '---' if status == "Niedostępne" else f"{device.detected_weight}",
             'status': status,
             'status_class': status_class,
         })
