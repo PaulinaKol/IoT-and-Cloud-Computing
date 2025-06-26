@@ -38,8 +38,8 @@ Projekt wpisuje się w rozwój rozwiązań Smart Home i Smart Living, oferując 
 ❌/🚧/✅
 
 - ✅ Kontekst Biznesowy
-- 🚧 C4 - Diagram Architektury - Poziom Kontekstu
-- 🚧 C4 - Diagram Architektury - Poziom Kontenerów
+- ✅ C4 - Diagram Architektury - Poziom Kontekstu
+- ✅ C4 - Diagram Architektury - Poziom Kontenerów
 - 🚧 Kalkulator kosztów Azure/AWS
 - ✅ Symulator Urządzenia IoT
 - ✅ Serwis MQTT Broker
