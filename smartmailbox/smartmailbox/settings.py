@@ -148,7 +148,6 @@ DEFAULT_FROM_EMAIL = "SmartMailbox <no-reply@smartmailbox.local>"
 #EMAIL_HOST_PASSWORD = ''
 #DEFAULT_FROM_EMAIL = 'SmartMailbox <smartmailbox@interia.pl>'
 
-IOT_AUTH_TOKEN = "TEMP_TEST_TOKEN"
 
 IOT_AUTH_TOKEN = "TEMP_TEST_TOKEN"
 STATIC_ROOT = BASE_DIR/'staticfiles'
