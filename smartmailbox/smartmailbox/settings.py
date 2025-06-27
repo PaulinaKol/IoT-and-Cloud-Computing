@@ -150,4 +150,6 @@ DEFAULT_FROM_EMAIL = "SmartMailbox <no-reply@smartmailbox.local>"
 
 IOT_AUTH_TOKEN = "TEMP_TEST_TOKEN"
 
+IOT_AUTH_TOKEN = "TEMP_TEST_TOKEN"
+STATIC_ROOT = BASE_DIR/'staticfiles'
 

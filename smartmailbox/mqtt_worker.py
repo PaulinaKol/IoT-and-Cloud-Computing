@@ -1,15 +1,17 @@
+import os
 import time
 import logging
 import threading
 import json
 import atexit
 import requests
+import signal
+import sys
 import paho.mqtt.client as mqtt
 from concurrent.futures import ThreadPoolExecutor
-# --- Żeby ograniczyć SPAM w terminaly spowodowany samopodpisanym certyfikatem
+
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-# ---
 
 logging.basicConfig(
     level=logging.INFO,
@@ -19,86 +21,78 @@ logger = logging.getLogger("mqtt_worker")
 
 exit_flag = threading.Event()
 
-executor = ThreadPoolExecutor(max_workers=10)
-BROKER = "test.mosquitto.org"
-PORT = 1883
-TOPIC = "mailbox/device_events"
+executor = ThreadPoolExecutor(max_workers=int(os.getenv('MQTT_WORKER_THREADS', '10')))
+BROKER = os.getenv('MQTT_BROKER', '52.139.28.127')
+PORT = int(os.getenv('MQTT_PORT', '1883'))
+TOPIC = os.getenv('MQTT_TOPIC', 'smartmailbox/device_events')
+BACKEND_URL = os.getenv('BACKEND_URL', 'https://smartmailbox-dtcuf3gdajhdc7ez.canadacentral-01.azurewebsites.net/api/device_event/')
+API_TOKEN = os.getenv('API_TOKEN', 'TEMP_TEST_TOKEN')
+VERIFY_SSL = os.getenv('VERIFY_SSL', 'False').lower() in ['1', 'true', 'yes']
 
 def on_connect(client, userdata, flags, rc):
-    logger.info(f"Połączono z MQTT, kod: {rc}")
+    logger.info(f"Connected to MQTT broker: {BROKER}:{PORT}, code: {rc}")
     client.subscribe(TOPIC)
 
 def on_message(client, userdata, msg):
-    logger.info(f"Otrzymano wiadomość: {msg.payload}")
+    logger.info(f"Received MQTT message: {msg.payload}")
     try:
         data = json.loads(msg.payload.decode())
         executor.submit(send_event_to_backend, data)
     except Exception as e:
-        logger.error(f"Błąd dekodowania payload: {e}")
+        logger.error(f"Payload decode error: {e}")
 
 def send_event_to_backend(payload, max_retries=3, delay=2):
-    url = "https://localhost:8000/api/device_event/"
     headers = {
-        "Authorization": "Token TEMP_TEST_TOKEN",
+        "Authorization": f"Token {API_TOKEN}",
         "Content-Type": "application/json"
     }
     for attempt in range(1, max_retries + 1):
         try:
-            resp = requests.post(url, json=payload, headers=headers, timeout=3, verify=False) # Mamy samopodpisany certyfikat SSL
+            resp = requests.post(BACKEND_URL, json=payload, headers=headers, timeout=5, verify=VERIFY_SSL)
             try:
-                logger.info(f"Odpowiedź backendu: {resp.status_code} {resp.json()}")
+                logger.info(f"Backend response: {resp.status_code} {resp.json()}")
             except Exception:
-                logger.info(f"Odpowiedź backendu: {resp.status_code} {resp.text}")
+                logger.info(f"Backend response: {resp.status_code} {resp.text}")
             return
         except Exception as e:
-            logger.warning(f"Błąd REST API (próba {attempt} z {max_retries}): {e}")
+            logger.warning(f"REST API error (attempt {attempt} of {max_retries}): {e}")
             if attempt < max_retries:
-                logger.info(f"Ponawianie za {delay} sekundy...")
+                logger.info(f"Retrying in {delay} seconds...")
                 time.sleep(delay)
             else:
-                logger.error("Nie udało się połączyć z backendem po kilku próbach.")
+                logger.error("Failed to connect to backend after several attempts.")
 
 def close_executor():
     executor.shutdown(wait=True)
-    logger.info("Zamknięto executor, wszystkie zadania zakończone.")
+    logger.info("Executor closed, all tasks completed.")
 
 atexit.register(close_executor)
 
-def input_thread():
-    while not exit_flag.is_set():
-        try:
-            cmd = input()
-            if cmd.strip().lower() in ['stop', 'exit', 'quit']:
-                logger.info("Otrzymano polecenie zakończenia programu.")
-                exit_flag.set()
-                break
-        except EOFError:
-            # Np. Ctrl+D
-            logger.info("EOF – kończenie programu.")
-            exit_flag.set()
-            break
+def handle_sigterm(signum, frame):
+    logger.info("Received termination signal. Shutting down gracefully...")
+    exit_flag.set()
 
 def main():
+    signal.signal(signal.SIGTERM, handle_sigterm)
+    signal.signal(signal.SIGINT, handle_sigterm) # Optional: Ctrl+C locally
+
     client = mqtt.Client()
     client.on_connect = on_connect
     client.on_message = on_message
 
-    threading.Thread(target=input_thread, daemon=True).start()
-
     try:
         client.connect(BROKER, PORT, 60)
         client.loop_start()
-        logger.info("mqtt_worker działa. Naciśnij Ctrl+C lub wpisz 'stop' by zakończyć.")
+        logger.info("mqtt_worker started and running. Waiting for messages...")
         while not exit_flag.is_set():
             time.sleep(0.5)
-    except KeyboardInterrupt:
-        logger.info("Przerwano przez Ctrl+C. Kończę pracę.")
+    except Exception as e:
+        logger.error(f"Critical error: {e}")
         exit_flag.set()
     finally:
         client.loop_stop()
         client.disconnect()
-        logger.info("Rozłączono z MQTT brokera.")
-
+        logger.info("Disconnected from MQTT broker.")
 
 if __name__ == "__main__":
     main()

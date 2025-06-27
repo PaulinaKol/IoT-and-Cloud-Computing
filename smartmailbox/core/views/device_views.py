@@ -128,7 +128,7 @@ def delete_notifications(request):
 @csrf_exempt
 def device_event_api(request):
     AUTH_TOKEN = getattr(settings, "IOT_AUTH_TOKEN", None)
-    if request.headers.get('Authorization') != f'Token {AUTH_TOKEN}':
+    if request.headers.get('Authorization') != f'{AUTH_TOKEN}':
         return JsonResponse({'error': 'Unauthorized'}, status=403)
 
     if request.method != 'POST':

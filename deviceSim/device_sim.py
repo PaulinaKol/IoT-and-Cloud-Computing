@@ -17,9 +17,9 @@ ASCII_ART = r"""
       |___/                                       
 """
 
-BROKER = "test.mosquitto.org"  # Tymczasowy broker testowy
+BROKER = "52.139.28.127" 
 PORT = 1883
-TOPIC = "mailbox/device_events"
+TOPIC = "smartmailbox/device_events"
 
 def heartbeat_loop(client, device_id_ref, security_code_ref, battery_ref, weight_ref, running_flag, paused_flag):
     while running_flag["run"]:
