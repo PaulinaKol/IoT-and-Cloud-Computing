@@ -60,5 +60,10 @@ Projekt wpisuje się w rozwój rozwiązań Smart Home i Smart Living, oferując 
 
 ---
 
+### 🔢 Skalowanie – Szacunki
+| Liczba użytkowników | Koszt minimalny        | Koszt rozsądny           |
+|---------------------|------------------------|-------------------------|
+| 100 użytkowników    | ~$90–110/miesiąc       | ~$130–150/miesiąc       |
+| 1000 użytkowników   | ~$150–200/miesiąc      | ~$250–300/miesiąc       |
 
 
