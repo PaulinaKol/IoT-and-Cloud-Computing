@@ -40,7 +40,7 @@ Projekt wpisuje się w rozwój rozwiązań Smart Home i Smart Living, oferując 
 - ✅ Kontekst Biznesowy
 - ✅ C4 - Diagram Architektury - Poziom Kontekstu
 - ✅ C4 - Diagram Architektury - Poziom Kontenerów
-- 🚧 Kalkulator kosztów Azure/AWS
+- ✅ Kalkulator kosztów Azure/AWS
 - ✅ Symulator Urządzenia IoT
 - ✅ Serwis MQTT Broker
 - ✅ Baza Danych
@@ -53,7 +53,7 @@ Projekt wpisuje się w rozwój rozwiązań Smart Home i Smart Living, oferując 
 - ❌ Kolekcja Postman
 - ✅ Frontend
 - ✅ Własny system logowania i rejestracji
-- ✅ Możliwość zarządzania ustawieniami użytkownika
+- ✅ Możliwość zarządzania użytkownikami
 - ✅ Możliwość zarządzania urządzeniami
 - 🚧 Czy rozwiązanie jest bezpieczne?
 - ❌ Zdalna konfiguracja urządzenia
