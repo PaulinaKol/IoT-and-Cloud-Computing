@@ -60,10 +60,18 @@ Projekt wpisuje się w rozwój rozwiązań Smart Home i Smart Living, oferując 
 
 ---
 
-### 🔢 Skalowanie – Szacunki
-| Liczba użytkowników | Koszt minimalny        | Koszt rozsądny           |
-|---------------------|------------------------|-------------------------|
-| 100 użytkowników    | ~$90–110/miesiąc       | ~$130–150/miesiąc       |
-| 1000 użytkowników   | ~$150–200/miesiąc      | ~$250–300/miesiąc       |
+### 🔢 Microsoft Azure Kalkulator Kosztów	(estymacja na 100 użytkowników)
+
+|     Typ serwisu     |   ~ Koszt miesięczny   | 
+|---------------------|------------------------|
+|     App Service     |       $128,48          | 
+|   Virtual Machines  |        $16,06          | 
+|  Azure SQL Database |       $429,35          | 
+| Container Instances |        $39,12          | 
+|  Container Registry |         $5,00          | 
+|   Virtual Network   |         $4,00          | 
+
+Miesięczny koszt na 100 użytkowników:  $ 622,01
+
 
 
